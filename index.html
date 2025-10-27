@@ -3,1137 +3,3411 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio d'Architecture - Portfolio</title>
+    <title>Monde Blanc Infini - Meta</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+    body {
+        background: linear-gradient(135deg, #ffffff, #f0f0f0);
+        font-family: 'Georgia', serif;
+        overflow: hidden;
+        height: 100vh;
+    }
 
-        body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            overflow-x: hidden;
-            background: #000;
-            color: #fff;
+    /* === STYLES TERMINAL RÉTRO === */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 99999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    .modal-overlay.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0, 0);
+        width: 90%;
+        max-width: 1200px;
+        height: 80vh;
+        max-height: 90vh;
+        background: rgba(0, 30, 0, 0.9);
+        border: 3px solid #0f0;
+        box-shadow: 0 0 50px #0f0, inset 0 0 50px rgba(0, 255, 0, 0.1);
+        padding: 40px 20px;
+        overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+        .modal {
+            width: 95%;
+            height: 90vh;
+            padding: 30px 15px;
         }
+    }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            padding: 30px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0);
+    @media (max-width: 480px) {
+        .modal {
+            width: 98%;
+            height: 95vh;
+            padding: 20px 10px;
         }
+    }
 
-        nav.scrolled {
-            background: rgba(0, 0, 0, 0.95);
-            padding: 20px 60px;
-            backdrop-filter: blur(10px);
-        }
+    .modal.visible {
+        animation: crtOpen 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards, screenFlicker 0.1s infinite;
+    }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 3px;
-        }
+    .modal.hidden {
+        animation: crtClose 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
 
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            position: relative;
-            transition: opacity 0.3s;
-        }
-
-        .nav-links a:hover {
-            opacity: 0.7;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: #fff;
-            transition: width 0.3s;
-        }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Section de base */
-        section {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* Hero Section - Parallax Vertical */
-        #hero {
-            height: 120vh;
-        }
-
-        .parallax-bg {
-            position: absolute;
-            top: -20%;
-            left: 0;
-            width: 100%;
-            height: 140%;
-            background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2000');
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .hero-content h1 {
-            font-size: clamp(50px, 8vw, 120px);
-            font-weight: 200;
-            letter-spacing: 10px;
-            margin-bottom: 20px;
+    @keyframes crtOpen {
+        0% {
+            transform: translate(-50%, -50%) scale(0, 0);
             opacity: 0;
-            animation: fadeInUp 1s ease forwards;
         }
-
-        .hero-content p {
-            font-size: clamp(16px, 2vw, 24px);
-            font-weight: 300;
-            letter-spacing: 3px;
-            opacity: 0;
-            animation: fadeInUp 1s ease 0.3s forwards;
+        50% {
+            transform: translate(-50%, -50%) scale(1.1, 0.05);
         }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-        }
-
-        /* Projects Section - Parallax Horizontal */
-        #projets {
-            background: #0a0a0a;
-            padding: 100px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: clamp(40px, 6vw, 80px);
-            font-weight: 200;
-            letter-spacing: 5px;
-            margin-bottom: 80px;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .section-title.visible {
+        100% {
+            transform: translate(-50%, -50%) scale(1, 1);
             opacity: 1;
-            transform: translateY(0);
         }
+    }
 
-        .horizontal-scroll-wrapper {
-            display: flex;
-            gap: 40px;
-            padding: 0 60px;
-            will-change: transform;
-            transition: transform 0.3s ease-out;
+    @keyframes crtClose {
+        0% {
+            transform: translate(-50%, -50%) scale(1, 1);
+            opacity: 1;
         }
-
-        .project-card {
-            min-width: 600px;
-            height: 400px;
-            position: relative;
-            border-radius: 10px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.5s ease;
+        50% {
+            transform: translate(-50%, -50%) scale(1.1, 0.05);
         }
-
-        .project-card:hover {
-            transform: scale(1.05);
+        100% {
+            transform: translate(-50%, -50%) scale(0, 0);
+            opacity: 0;
         }
+    }
 
-        .project-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+    @keyframes screenFlicker {
+        0% { opacity: 0.97; }
+        50% { opacity: 1; }
+        100% { opacity: 0.98; }
+    }
+
+    .scanlines {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            transparent 50%,
+            rgba(0, 0, 0, 0.3) 50%
+        );
+        background-size: 100% 4px;
+        pointer-events: none;
+        z-index: 10;
+        animation: scanline 8s linear infinite;
+    }
+
+    @keyframes scanline {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(4px); }
+    }
+
+    .content {
+        position: relative;
+        z-index: 5;
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .content {
+            padding-right: 5px;
         }
+    }
 
-        .project-card:hover img {
-            transform: scale(1.1);
+    /* Custom scrollbar pour webkit */
+    .content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .content::-webkit-scrollbar-track {
+        background: rgba(0, 255, 0, 0.1);
+    }
+
+    .content::-webkit-scrollbar-thumb {
+        background: rgba(0, 255, 0, 0.5);
+        border-radius: 4px;
+    }
+
+    .content::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 255, 0, 0.8);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: none;
+        border: 2px solid #0f0;
+        color: #0f0;
+        font-size: clamp(18px, 4vw, 24px);
+        cursor: pointer;
+        padding: 5px 15px;
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 5px #0f0;
+        z-index: 20;
+        transition: all 0.3s;
+    }
+
+    .close-btn:hover {
+        background: #0f0;
+        color: #000;
+    }
+
+    @media (max-width: 768px) {
+        .close-btn {
+            top: 8px;
+            right: 12px;
+            padding: 4px 12px;
+            font-size: clamp(16px, 4vw, 20px);
         }
+    }
 
-        .project-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    @media (max-width: 480px) {
+        .close-btn {
+            top: 5px;
+            right: 8px;
+            padding: 3px 10px;
+            font-size: clamp(14px, 4vw, 18px);
         }
+    }
 
-        .project-overlay h3 {
-            font-size: 28px;
-            font-weight: 300;
-            letter-spacing: 2px;
+    .modal h1 {
+        text-align: center;
+        color: #ffff00;
+        text-shadow: 0 0 10px #ffff00;
+        margin-bottom: 40px;
+        font-size: clamp(24px, 6vw, 36px);
+        letter-spacing: clamp(2px, 1vw, 5px);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    @media (max-width: 768px) {
+        .modal h1 {
+            margin-bottom: 25px;
+            font-size: clamp(20px, 5vw, 28px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .modal h1 {
+            margin-bottom: 20px;
+            font-size: clamp(18px, 5vw, 24px);
+        }
+    }
+
+    .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 1024px) {
+        .controls-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .controls-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .controls-grid {
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+    }
+
+    .control-section h2 {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: clamp(16px, 3vw, 20px);
+        margin-bottom: 15px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    @media (max-width: 768px) {
+        .control-section h2 {
+            font-size: clamp(14px, 3.5vw, 18px);
+            margin-bottom: 12px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .control-section h2 {
+            font-size: clamp(13px, 4vw, 16px);
             margin-bottom: 10px;
         }
+    }
 
-        .project-overlay p {
-            font-size: 14px;
-            letter-spacing: 1px;
-            opacity: 0.8;
+    .control-item {
+        color: #ffff00;
+        margin: 8px 0;
+        font-size: clamp(11px, 2.5vw, 14px);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+        .control-item {
+            margin: 6px 0;
+            font-size: clamp(10px, 3vw, 13px);
         }
+    }
 
-        /* About Section - Parallax en Profondeur (Zoom) */
-        #about {
-            position: relative;
-            height: 100vh;
+    @media (max-width: 480px) {
+        .control-item {
+            margin: 5px 0;
+            font-size: clamp(9px, 3.5vw, 12px);
         }
+    }
 
-        .depth-parallax-bg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(1.5);
-            width: 100%;
-            height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1503174971373-b1f69850bded?q=80&w=2560&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-            filter: brightness(1.2);
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
+    .control-value {
+        color: #0f0;
+        text-shadow: 0 0 5px #0f0;
+    }
+
+    .teleport-section {
+        margin-top: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .teleport-section {
+            margin-top: 20px;
         }
+    }
 
-        .about-content {
-            position: relative;
-            z-index: 10;
-            max-width: 800px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease;
+    @media (max-width: 480px) {
+        .teleport-section {
+            margin-top: 15px;
         }
+    }
 
-        .about-content.visible {
-            opacity: 1;
-            transform: translateY(0);
+    .teleport-section h2 {
+        color: #00ffff;
+        text-shadow: 0 0 10px #00ffff;
+        font-size: clamp(16px, 3vw, 20px);
+        margin-bottom: 15px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    @media (max-width: 768px) {
+        .teleport-section h2 {
+            font-size: clamp(14px, 3.5vw, 18px);
+            margin-bottom: 12px;
         }
+    }
 
-        .about-content h2 {
-            font-size: 48px;
-            font-weight: 200;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
+    @media (max-width: 480px) {
+        .teleport-section h2 {
+            font-size: clamp(13px, 4vw, 16px);
+            margin-bottom: 10px;
         }
+    }
 
-        .about-content p {
+    .teleport-item {
+        color: #ff8800;
+        margin: 8px 0;
+        font-size: clamp(11px, 2.5vw, 14px);
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.4;
+    }
+
+    @media (max-width: 768px) {
+        .teleport-item {
+            margin: 6px 0;
+            font-size: clamp(10px, 3vw, 13px);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .teleport-item {
+            margin: 5px 0;
+            font-size: clamp(9px, 3.5vw, 12px);
+        }
+    }
+
+    .teleport-value {
+        color: #0f0;
+        text-shadow: 0 0 5px #0f0;
+    }
+
+    .glitch {
+        animation: glitch 3s infinite;
+    }
+
+    @keyframes glitch {
+        0%, 90%, 100% { transform: translate(0); }
+        91% { transform: translate(-2px, 1px); }
+        92% { transform: translate(2px, -1px); }
+        93% { transform: translate(-1px, 2px); }
+        94% { transform: translate(1px, -2px); }
+    }
+    
+    #container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+    
+    .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #333;
+        font-size: 24px;
+        z-index: 10;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    #cockpit-hud {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 50;
+        display: none;
+    }
+    
+    #radar-screen {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 250px;
+        height: 250px;
+        background: rgba(0, 50, 0, 0.8);
+        border: 3px solid #00ff00;
+        border-radius: 10px;
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.8), inset 0 0 20px rgba(0, 255, 0, 0.2);
+        z-index: 101;
+        display: none;
+    }
+    
+    /* Système de menus thématiques pour mobile */
+    .mobile-menu-btn {
+        position: fixed;
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        color: #fff;
+        font-weight: bold;
+        font-size: 24px;
+        z-index: 1001;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Courier New', monospace;
+        border: 3px solid;
+        transition: all 0.3s;
+    }
+    
+    .mobile-menu-btn:active {
+        transform: scale(0.9);
+    }
+    
+    .mobile-menu-btn.active {
+        transform: rotate(90deg);
+    }
+    
+    /* Bouton Navigation (Radar, HUD, Vitesse) */
+    #navMenuButton {
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 255, 100, 0.8);
+        border-color: #00ff66;
+        box-shadow: 0 0 15px rgba(0, 255, 100, 0.7);
+    }
+    
+    /* Bouton Collection (Collecter, Boules de cristal, Infinity Stones) */
+    #collectMenuButton {
+        top: 75px;
+        right: 10px;
+        background: rgba(255, 215, 0, 0.8);
+        border-color: #ffd700;
+        box-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+    }
+    
+    /* Bouton Stargate */
+    #stargateMenuButton {
+        top: 140px;
+        right: 10px;
+        background: rgba(0, 150, 255, 0.8);
+        border-color: #0099ff;
+        box-shadow: 0 0 15px rgba(0, 150, 255, 0.7);
+    }
+    
+    /* Sous-menus */
+    .sub-menu {
+        position: fixed;
+        right: 75px;
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid;
+        border-radius: 10px;
+        padding: 5px;
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        z-index: 1000;
+    }
+    
+    .sub-menu.show {
+        display: flex;
+    }
+    
+    .sub-menu-btn {
+        width: 120px;
+        padding: 8px 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid;
+        border-radius: 8px;
+        color: #fff;
+        font-weight: bold;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: 'Courier New', monospace;
+        text-align: left;
+        transition: all 0.2s;
+    }
+    
+    .sub-menu-btn:active {
+        transform: scale(0.95);
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* Sous-menu Navigation */
+    #navSubMenu {
+        top: 10px;
+        border-color: #00ff66;
+    }
+    
+    #navSubMenu .sub-menu-btn {
+        border-color: #00ff66;
+    }
+    
+    /* Sous-menu Collection */
+    #collectSubMenu {
+        top: 75px;
+        border-color: #ffd700;
+    }
+    
+    #collectSubMenu .sub-menu-btn {
+        border-color: #ffd700;
+    }
+    
+    /* Sous-menu Stargate */
+    #stargateSubMenu {
+        top: 140px;
+        border-color: #0099ff;
+    }
+    
+    #stargateSubMenu .sub-menu-btn {
+        border-color: #0099ff;
+    }
+    
+    @keyframes collect-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.2); box-shadow: 0 0 30px rgba(255, 215, 0, 1); }
+    }
+    
+    /* Afficher les boutons de menu sur mobile */
+    @media (max-width: 768px), (pointer: coarse) {
+        .mobile-menu-btn {
+            display: flex;
+        }
+        
+        /* Bouton AIDE maintenant en dehors du cockpit-hud - styles supprimés */
+    }
+    
+    .radar-display {
+        width: 100%;
+        height: 100%;
+    }
+    
+    #central-view {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        height: 60%;
+        border: 4px solid #ff6600;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: inset 0 0 50px rgba(255, 102, 0, 0.2), 0 0 30px rgba(255, 102, 0, 0.4);
+        opacity: 0.5;
+    }
+    
+    .tunnel-display {
+        width: 100%;
+        height: 100%;
+    }
+    
+    #cockpit-frame-top,
+    #cockpit-frame-bottom,
+    #cockpit-frame-left,
+    #cockpit-frame-right {
+        position: absolute;
+        background: linear-gradient(45deg, rgba(20, 20, 20, 0.7), rgba(40, 40, 40, 0.7));
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    #cockpit-frame-top {
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        border-bottom: 2px solid #00ffff;
+    }
+    
+    #cockpit-frame-bottom {
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 80px;
+        border-top: 2px solid #ff6600;
+    }
+    
+    #cockpit-frame-left {
+        top: 80px;
+        left: 0;
+        width: 100px;
+        height: calc(100% - 160px);
+        border-right: 2px solid #00ffff;
+    }
+    
+    #cockpit-frame-right {
+        top: 80px;
+        right: 0;
+        width: 100px;
+        height: calc(100% - 160px);
+        border-left: 2px solid #ff6600;
+    }
+    
+    @keyframes pulse {
+        0% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.05); }
+        100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    
+    /* Joysticks virtuels pour mobile */
+    .joystick-zone {
+        position: fixed;
+        bottom: 5vh;
+        width: 20vmin;
+        height: 20vmin;
+        max-width: 150px;
+        max-height: 150px;
+        min-width: 80px;
+        min-height: 80px;
+        border: 2px solid rgba(0, 255, 255, 0.5);
+        border-radius: 50%;
+        background: rgba(0, 20, 40, 0.6);
+        z-index: 1000;
+        display: none;
+    }
+    
+    #leftJoystick {
+        left: 5vw;
+    }
+    
+    #rightJoystick {
+        right: 5vw;
+    }
+    
+    .joystick-knob {
+        position: absolute;
+        width: 40%;
+        height: 40%;
+        background: rgba(0, 255, 255, 0.8);
+        border: 2px solid #00ffff;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+    }
+    
+    /* Afficher les joysticks sur mobile */
+    @media (max-width: 768px), (pointer: coarse) {
+        .joystick-zone {
+            display: block;
+        }
+    }
+    
+    /* Indicateur de double-tap */
+    .joystick-zone.firing {
+        border-color: #ff0066;
+        box-shadow: 0 0 20px rgba(255, 0, 100, 0.9);
+    }
+    
+    .joystick-zone.firing .joystick-knob {
+        background: rgba(255, 0, 100, 0.8);
+        border-color: #ff0066;
+        box-shadow: 0 0 15px rgba(255, 0, 100, 0.9);
+    }
+    
+    /* Bouton de tir pour mobile */
+    #fireButton {
+        position: fixed;
+        bottom: 5vh;
+        right: 50%;
+        transform: translateX(50%);
+        width: 18vmin;
+        height: 18vmin;
+        max-width: 120px;
+        max-height: 120px;
+        min-width: 70px;
+        min-height: 70px;
+        background: rgba(255, 0, 100, 0.7);
+        border: 3px solid #ff0066;
+        border-radius: 50%;
+        color: #fff;
+        font-weight: bold;
+        font-size: clamp(14px, 3.5vmin, 20px);
+        z-index: 1000;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-shadow: 0 0 25px rgba(255, 0, 100, 0.7);
+        font-family: 'Courier New', monospace;
+    }
+    
+    #fireButton:active {
+        background: rgba(255, 0, 100, 0.95);
+        box-shadow: 0 0 35px rgba(255, 0, 100, 1);
+        transform: translateX(50%) scale(0.95);
+    }
+    
+    /* Afficher le bouton de tir sur mobile */
+    @media (max-width: 768px), (pointer: coarse) {
+        #fireButton {
+            display: flex;
+        }
+    }
+    
+    /* Mode portrait : boutons espacés verticalement */
+    @media (max-width: 768px) and (orientation: portrait) {
+        #leftJoystick {
+            bottom: 5vh;
+            left: 5vw;
+        }
+        
+        #rightJoystick {
+            bottom: 5vh;
+            right: 5vw;
+        }
+        
+        #fireButton {
+            bottom: 30vh;
+            right: 5vw;
+            transform: translateX(0);
+        }
+        
+        /* Boutons de menu empilés verticalement à droite */
+        #navMenuButton {
+            top: 10px;
+            right: 10px;
+        }
+        
+        #collectMenuButton {
+            top: 75px;
+            right: 10px;
+        }
+        
+        #stargateMenuButton {
+            top: 140px;
+            right: 10px;
+        }
+        
+        /* Sous-menus à gauche des boutons */
+        .sub-menu {
+            right: 75px;
+        }
+        
+        #radar-screen {
+            top: 10px;
+            right: 75px;
+            width: 200px;
+            height: 200px;
+        }
+    }
+    
+    /* Mode paysage : boutons espacés horizontalement */
+    @media (max-width: 768px) and (orientation: landscape) {
+        #leftJoystick {
+            bottom: 3vh;
+            left: 3vw;
+        }
+        
+        #rightJoystick {
+            bottom: 3vh;
+            right: calc(3vw + 22vmin);
+        }
+        
+        #fireButton {
+            bottom: 3vh;
+            right: 3vw;
+            transform: translateX(0);
+        }
+        
+        /* Boutons de menu en ligne horizontale en haut */
+        #navMenuButton {
+            top: 10px;
+            right: 10px;
+        }
+        
+        #collectMenuButton {
+            top: 10px;
+            right: 75px;
+        }
+        
+        #stargateMenuButton {
+            top: 10px;
+            right: 140px;
+        }
+        
+        /* Sous-menus en dessous en paysage */
+        .sub-menu {
+            right: auto;
+            top: 75px;
+        }
+        
+        #navSubMenu {
+            right: 10px;
+        }
+        
+        #collectSubMenu {
+            right: 75px;
+        }
+        
+        #stargateSubMenu {
+            right: 140px;
+        }
+        
+        #radar-screen {
+            top: 75px;
+            left: 10px;
+            right: auto;
+            width: 180px;
+            height: 180px;
+        }
+    }
+    
+    /* Tablettes en portrait */
+    @media (min-width: 481px) and (max-width: 768px) and (orientation: portrait) {
+        #fireButton {
+            bottom: 28vh;
+        }
+    }
+    
+    /* Smartphones en paysage */
+    @media (max-height: 500px) and (orientation: landscape) {
+        #leftJoystick, #rightJoystick, #fireButton {
+            bottom: 2vh;
+            width: 15vmin;
+            height: 15vmin;
+        }
+        
+        #rightJoystick {
+            right: calc(2vw + 18vmin);
+        }
+        
+        #fireButton {
+            right: 2vw;
+        }
+        
+        /* Boutons de menu plus petits et alignés horizontalement */
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
             font-size: 18px;
-            line-height: 1.8;
-            font-weight: 300;
-            letter-spacing: 1px;
         }
-
-        /* Services Section */
-        #services {
-            position: relative;
-            min-height: 100vh;
-            background: #000;
-            overflow: hidden;
+        
+        #navMenuButton {
+            top: 5px;
+            right: 5px;
         }
-
-        .services-bg {
-            position: absolute;
-            top: -20%;
-            left: 0;
-            width: 100%;
-            height: 140%;
-            background-image: url('https://images.unsplash.com/photo-1600607687644-c7171b42498f?q=80&w=2560&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.6;
-            will-change: transform;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            filter: brightness(1.3);
+        
+        #collectMenuButton {
+            top: 5px;
+            right: 55px;
         }
-
-        .services-content {
-            position: relative;
-            z-index: 10;
-            padding: 100px 60px;
+        
+        #stargateMenuButton {
+            top: 5px;
+            right: 105px;
         }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            margin-top: 60px;
+        
+        .sub-menu {
+            top: 50px;
         }
-
-        .service-item {
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            transition: all 0.4s ease;
-            opacity: 0;
-            transform: translateY(30px);
+        
+        #navSubMenu {
+            right: 5px;
         }
-
-        .service-item.visible {
-            opacity: 1;
-            transform: translateY(0);
+        
+        #collectSubMenu {
+            right: 55px;
         }
-
-        .service-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-10px);
+        
+        #stargateSubMenu {
+            right: 105px;
         }
-
-        .service-item h3 {
-            font-size: 24px;
-            font-weight: 300;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
+        
+        .sub-menu-btn {
+            width: 100px;
+            padding: 6px 10px;
+            font-size: 11px;
         }
-
-        .service-item p {
-            font-size: 16px;
-            line-height: 1.6;
-            opacity: 0.8;
+        
+        #radar-screen {
+            top: 50px;
+            left: 5px;
+            right: auto;
+            width: 120px;
+            height: 120px;
         }
-
-        /* Contact Section */
-        #contact {
-            position: relative;
-            min-height: 100vh;
-            padding: 100px 60px;
-            text-align: center;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .contact-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2560&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-            filter: brightness(1.2);
-            transform: scale(1.2);
-            opacity: 0.6;
-        }
-
-        .contact-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%);
-            z-index: 1;
-        }
-
-        .contact-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            padding: 60px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 800px;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease;
-        }
-
-        .contact-content.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .contact-info {
-            margin-top: 60px;
-            font-size: 20px;
-            letter-spacing: 2px;
-        }
-
-        .contact-info a {
-            color: #fff;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .contact-info a:hover {
-            opacity: 0.7;
-        }
-
-        /* Footer */
-        footer {
-            position: relative;
-            height: 60vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .footer-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 120%;
-            background-image: url('https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2560&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            will-change: transform;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-        }
-
-        .footer-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        }
-
-        .footer-content {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .footer-content p {
-            font-size: 16px;
-            letter-spacing: 3px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        .footer-content .copyright {
-            font-size: 12px;
-            letter-spacing: 2px;
-            opacity: 0.6;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            nav {
-                padding: 20px 40px;
-            }
-
-            .hero-content h1 {
-                font-size: clamp(40px, 10vw, 80px);
-            }
-
-            .section-title {
-                font-size: clamp(30px, 8vw, 60px);
-                margin-bottom: 60px;
-            }
-
-            .project-card {
-                min-width: 70vw;
-                height: 350px;
-            }
-
-            .about-content {
-                max-width: 600px;
-                padding: 30px;
-            }
-
-            .services-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 30px;
-            }
-
-            .contact-content {
-                padding: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                overflow-x: hidden;
-            }
-
-            nav {
-                padding: 15px 20px;
-            }
-
-            nav.scrolled {
-                padding: 15px 20px;
-            }
-
-            .logo {
-                font-size: 20px;
-                letter-spacing: 2px;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .nav-links a {
-                font-size: 11px;
-                letter-spacing: 1px;
-            }
-
-            .hero-content h1 {
-                font-size: clamp(35px, 12vw, 60px);
-                letter-spacing: 5px;
-            }
-
-            .hero-content p {
-                font-size: clamp(14px, 4vw, 18px);
-                letter-spacing: 2px;
-            }
-
-            .section-title {
-                font-size: clamp(28px, 10vw, 50px);
-                letter-spacing: 3px;
-                margin-bottom: 40px;
-            }
-
-            #projets {
-                padding: 80px 0;
-            }
-
-            .horizontal-scroll-wrapper {
-                padding: 0 20px;
-                gap: 20px;
-            }
-
-            .project-card {
-                min-width: 85vw;
-                height: 300px;
-            }
-
-            .project-overlay {
-                padding: 20px;
-            }
-
-            .project-overlay h3 {
-                font-size: 22px;
-            }
-
-            .project-overlay p {
-                font-size: 13px;
-            }
-
-            .about-content {
-                max-width: 90%;
-                padding: 25px;
-                margin: 20px;
-            }
-
-            .about-content h2 {
-                font-size: 32px;
-                margin-bottom: 20px;
-            }
-
-            .about-content p {
-                font-size: 15px;
-                line-height: 1.6;
-            }
-
-            .services-content {
-                padding: 80px 20px;
-            }
-
-            .services-grid {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .service-item {
-                padding: 30px 25px;
-            }
-
-            .service-item h3 {
-                font-size: 20px;
-                margin-bottom: 15px;
-            }
-
-            .service-item p {
-                font-size: 14px;
-            }
-
-            #contact {
-                padding: 80px 20px;
-                min-height: 80vh;
-            }
-
-            .contact-content {
-                padding: 30px 25px;
-                max-width: 90%;
-            }
-
-            .contact-info {
-                margin-top: 40px;
-                font-size: 16px;
-            }
-
-            footer {
-                height: 50vh;
-            }
-
-            .footer-content {
-                padding: 30px 20px;
-            }
-
-            .footer-content p {
-                font-size: 14px;
-                letter-spacing: 2px;
-            }
-
-            .footer-content .copyright {
-                font-size: 11px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 16px;
-            }
-
-            .nav-links {
-                gap: 10px;
-            }
-
-            .nav-links a {
-                font-size: 9px;
-            }
-
-            .hero-content h1 {
-                font-size: clamp(28px, 12vw, 45px);
-                letter-spacing: 3px;
-            }
-
-            .hero-content p {
-                font-size: clamp(12px, 4vw, 16px);
-            }
-
-            .section-title {
-                font-size: clamp(24px, 10vw, 40px);
-                margin-bottom: 30px;
-            }
-
-            .project-card {
-                min-width: 90vw;
-                height: 250px;
-            }
-
-            .about-content {
-                padding: 20px;
-            }
-
-            .about-content h2 {
-                font-size: 26px;
-            }
-
-            .about-content p {
-                font-size: 14px;
-            }
-
-            .service-item {
-                padding: 25px 20px;
-            }
-
-            .service-item h3 {
-                font-size: 18px;
-            }
-
-            .service-item p {
-                font-size: 13px;
-            }
-
-            .contact-content {
-                padding: 25px 20px;
-            }
-
-            .contact-info {
-                font-size: 14px;
-            }
-
-            footer {
-                height: 40vh;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
-    <nav id="navbar">
-        <div class="logo">ARCHITECT</div>
-        <ul class="nav-links">
-            <li><a href="#hero">Accueil</a></li>
-            <li><a href="#projets">Projets</a></li>
-            <li><a href="#about">À Propos</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+    <div id="container"></div>
+    <div class="loading" id="loading">Chargement du Monde Blanc Infini...</div>
+<div id="cockpit-hud">
+    <div id="central-view">
+        <svg viewBox="0 0 800 600" class="tunnel-display">
+            <defs>
+                <linearGradient id="tunnelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#660000;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#000000;stop-opacity:0.9" />
+                </linearGradient>
+            </defs>
+            <rect width="800" height="600" fill="url(#tunnelGrad)"/>
+            <polygon points="400,180 480,220 480,380 400,420 320,380 320,220" fill="none" stroke="#ff6600" stroke-width="3"/>
+            <polygon points="400,220 460,250 460,350 400,380 340,350 340,250" fill="none" stroke="#ff8800" stroke-width="2"/>
+            <polygon points="400,250 440,270 440,330 400,350 360,330 360,270" fill="none" stroke="#ffaa00" stroke-width="2"/>
+            <polygon points="400,270 425,285 425,315 400,330 375,315 375,285" fill="none" stroke="#ffcc00" stroke-width="1"/>
+            <line x1="0" y1="300" x2="400" y2="300" stroke="#ff6600" stroke-width="2"/>
+            <line x1="800" y1="300" x2="400" y2="300" stroke="#ff6600" stroke-width="2"/>
+            <line x1="100" y1="0" x2="400" y2="300" stroke="#ff8800" stroke-width="1" opacity="0.6"/>
+            <line x1="700" y1="0" x2="400" y2="300" stroke="#ff8800" stroke-width="1" opacity="0.6"/>
+            <line x1="100" y1="600" x2="400" y2="300" stroke="#ff8800" stroke-width="1" opacity="0.6"/>
+            <line x1="700" y1="600" x2="400" y2="300" stroke="#ff8800" stroke-width="1" opacity="0.6"/>
+            <circle cx="400" cy="300" r="20" fill="none" stroke="#00ffff" stroke-width="2"/>
+            <line x1="400" y1="280" x2="400" y2="320" stroke="#00ffff" stroke-width="2"/>
+            <line x1="380" y1="300" x2="420" y1="300" stroke="#00ffff" stroke-width="2"/>
+            <text x="50" y="40" fill="#ff6600" font-size="20" font-family="monospace">ACC</text>
+            <text x="750" y="40" fill="#ff6600" font-size="20" font-family="monospace">ALT</text>
+            <text x="50" y="580" fill="#ff6600" font-size="20" font-family="monospace">DEC</text>
+            <text x="720" y="580" fill="#ff6600" font-size="20" font-family="monospace">L2</text>
+            <line x1="0" y1="100" x2="800" y2="100" stroke="#ffcc00" stroke-width="2" opacity="0.7"/>
+            <line x1="0" y1="500" x2="800" y2="500" stroke="#ffcc00" stroke-width="2" opacity="0.7"/>
+        </svg>
+    </div>
+    
+    <div id="cockpit-frame-top"></div>
+    <div id="cockpit-frame-bottom"></div>
+    <div id="cockpit-frame-left"></div>
+    <div id="cockpit-frame-right"></div>
+    
+    <div id="radar-screen">
+        <svg viewBox="0 0 250 250" class="radar-display" id="radar-svg">
+            <defs>
+                <radialGradient id="radarGlow">
+                    <stop offset="0%" style="stop-color:#00ff00;stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:#003300;stop-opacity:0.5" />
+                </radialGradient>
+            </defs>
+            <circle cx="125" cy="125" r="120" fill="url(#radarGlow)"/>
+            <circle cx="125" cy="125" r="120" fill="none" stroke="#00ff00" stroke-width="2" opacity="0.6"/>
+            <circle cx="125" cy="125" r="80" fill="none" stroke="#00ff00" stroke-width="2" opacity="0.5"/>
+            <circle cx="125" cy="125" r="40" fill="none" stroke="#00ff00" stroke-width="2" opacity="0.4"/>
+            <line x1="125" y1="5" x2="125" y2="245" stroke="#00ff00" stroke-width="1.5" opacity="0.4"/>
+            <line x1="5" y1="125" x2="245" y2="125" stroke="#00ff00" stroke-width="1.5" opacity="0.4"/>
+            <circle cx="125" cy="125" r="4" fill="#00ff00" opacity="0.9"/>
+        </svg>
+    </div>
+    
+    <!-- Modale des contrôles - Terminal Rétro -->
+    <div class="modal-overlay" id="controls-modal">
+        <div class="modal" id="modal">
+            <div class="scanlines"></div>
+            <button class="close-btn" id="closeBtn">X</button>
+            <div class="content glitch">
+                <h1>CON<span style="color: #00ffff;">SO</span>LES</h1>
+                
+                <div class="controls-grid">
+                    <div class="control-section">
+                        <h2>Navigation :</h2>
+                        <div class="control-item">Z/S/A/D - <span class="control-value" data-text="Déplacement"></span></div>
+                        <div class="control-item">Espace/Shift - <span class="control-value" data-text="Monter/Descendre"></span></div>
+                        <div class="control-item">Q/E - <span class="control-value" data-text="Monter/Descendre (alt.)"></span></div>
+                        <div class="control-item">R - <span class="control-value" data-text="Vue 1ère/3ème personne"></span></div>
+                    </div>
 
-    <!-- Hero Section - Parallax Vertical -->
-    <section id="hero">
-        <div class="parallax-bg"></div>
-        <div class="hero-content">
-            <h1>ARCHITECTURE</h1>
-            <p>Créer des espaces qui inspirent</p>
-        </div>
-    </section>
+                    <div class="control-section">
+                        <h2>Combat :</h2>
+                        <div class="control-item">Clic Gauche - <span class="control-value" data-text="Tirs triangulaires"></span></div>
+                        <div class="control-item">Clic Mollette - <span class="control-value" data-text="Explose planète"></span></div>
+                    </div>
 
-    <!-- Projects Section - Parallax Horizontal -->
-    <section id="projets">
-        <h2 class="section-title">Nos Projets</h2>
-        <div class="horizontal-scroll-wrapper">
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=800" alt="Villa Moderne">
-                <div class="project-overlay">
-                    <h3>Villa Moderne</h3>
-                    <p>Architecture résidentielle</p>
+                    <div class="control-section">
+                        <h2>Vitesse :</h2>
+                        <div class="control-item">V - <span class="control-value" data-text="Changer mode vitesse (1-6)"></span></div>
+                    </div>
+                </div>
+
+                <div class="controls-grid">
+                    <div class="control-section">
+                        <h2>Collection :</h2>
+                        <div class="control-item">A - <span class="control-value" data-text="Attraper objet"></span></div>
+                        <div class="control-item">B - <span class="control-value" data-text="Réunir Boules de cristal"></span></div>
+                        <div class="control-item">C - <span class="control-value" data-text="Réunir les pierres de thanos"></span></div>
+                    </div>
+
+                    <div class="control-section">
+                        <h2>Stargate :</h2>
+                        <div class="control-item">G - <span class="control-value" data-text="Afficher/Cacher Stargate"></span></div>
+                        <div class="control-item">T - <span class="control-value" data-text="Adresse de téléportation"></span></div>
+                    </div>
+
+                    <div class="control-section">
+                        <h2>Radar :</h2>
+                        <div class="control-item">O - <span class="control-value" data-text="Zoom radar (100m/250m/500m)"></span></div>
+                    </div>
+                </div>
+
+                <div class="teleport-section">
+                    <h2>Codes de téléportation :</h2>
+                    <div class="teleport-item">01234 - <span class="teleport-value" data-text="Métropole Principale"></span></div>
+                    <div class="teleport-item">0123456 - <span class="teleport-value" data-text="Zone de Combat"></span></div>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?q=80&w=800" alt="Tour Urbaine">
-                <div class="project-overlay">
-                    <h3>Tour Urbaine</h3>
-                    <p>Architecture commerciale</p>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=800" alt="Espace Culturel">
-                <div class="project-overlay">
-                    <h3>Espace Culturel</h3>
-                    <p>Architecture publique</p>
-                </div>
-            </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=800" alt="Maison Contemporaine">
-                <div class="project-overlay">
-                    <h3>Maison Contemporaine</h3>
-                    <p>Architecture durable</p>
-                </div>
-            </div>
         </div>
-    </section>
+    </div>
+    
+</div>
 
-    <!-- About Section - Parallax en Profondeur -->
-    <section id="about">
-        <div class="depth-parallax-bg"></div>
-        <div class="about-content">
-            <h2>Notre Vision</h2>
-            <p>Nous croyons que l'architecture est plus qu'une simple construction. C'est l'art de créer des espaces qui racontent une histoire, qui respectent l'environnement et qui enrichissent la vie des gens. Notre approche combine innovation technologique et sensibilité artistique pour concevoir des projets uniques et durables.</p>
-        </div>
-    </section>
+<!-- Bouton pour afficher les contrôles - TOUJOURS VISIBLE -->
+<button id="controls-button" onclick="toggleControlsModal()" style="position: fixed; top: 20px; left: 20px; z-index: 99999; background: rgba(0, 255, 0, 0.9); color: black; border: 2px solid #00ff00; padding: 12px 18px; border-radius: 8px; cursor: pointer; font-weight: bold; font-family: 'Courier New', monospace; font-size: 16px; pointer-events: auto !important; user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;">
+    🎮 AIDE
+</button>
 
-    <!-- Services Section -->
-    <section id="services">
-        <div class="services-bg"></div>
-        <div class="services-content">
-            <h2 class="section-title">Nos Services</h2>
-            <div class="services-grid">
-                <div class="service-item">
-                    <h3>Conception</h3>
-                    <p>De l'esquisse initiale aux plans détaillés, nous donnons vie à vos idées avec créativité et précision.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Rénovation</h3>
-                    <p>Transformation d'espaces existants en respectant leur caractère tout en les modernisant.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Architecture Durable</h3>
-                    <p>Solutions écologiques et durables pour un avenir respectueux de l'environnement.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Consultation</h3>
-                    <p>Expertise et conseils professionnels pour tous vos projets architecturaux.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Système de menus thématiques pour mobile -->
+    
+    <!-- Bouton menu Navigation -->
+    <button id="navMenuButton" class="mobile-menu-btn">🧭</button>
+    <div id="navSubMenu" class="sub-menu">
+        <button class="sub-menu-btn" id="radarBtn">📡 Radar</button>
+        <button class="sub-menu-btn" id="hudBtn">👁️ HUD</button>
+        <button class="sub-menu-btn" id="speedBtn">⚡ Vitesse</button>
+    </div>
+    
+    <!-- Bouton menu Collection -->
+    <button id="collectMenuButton" class="mobile-menu-btn">💎</button>
+    <div id="collectSubMenu" class="sub-menu">
+        <button class="sub-menu-btn" id="collectBtn"> Collecter</button>
+        <button class="sub-menu-btn" id="dragonBallsBtn">Boules</button>
+        <button class="sub-menu-btn" id="infinityStonesBtn">Pierres</button>
+    </div>
+    
+    <!-- Bouton menu Stargate -->
+    <button id="stargateMenuButton" class="mobile-menu-btn">🌀</button>
+    <div id="stargateSubMenu" class="sub-menu">
+        <button class="sub-menu-btn" id="stargateToggleBtn">🔘 Toggle</button>
+        <button class="sub-menu-btn" id="stargateInterfaceBtn">⌨️ adresses</button>
+    </div>
 
-    <!-- Contact Section -->
-    <section id="contact">
-        <div class="contact-bg"></div>
-        <div class="contact-overlay"></div>
-        <div class="contact-content">
-            <h2 class="section-title">Contactez-Nous</h2>
-            <div class="contact-info">
-                <p>Email: <a href="mailto:contact@architect.com">contact@architect.com</a></p>
-                <p>Téléphone: <a href="tel:+33123456789">+33 1 23 45 67 89</a></p>
-            </div>
-        </div>
-    </section>
+    <!-- Joysticks virtuels pour mobile -->
+    <div id="leftJoystick" class="joystick-zone">
+        <div class="joystick-knob"></div>
+    </div>
+    <div id="rightJoystick" class="joystick-zone">
+        <div class="joystick-knob"></div>
+    </div>
+    <button id="fireButton">TIRER</button>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-bg"></div>
-        <div class="footer-overlay"></div>
-        <div class="footer-content">
-            <p>CRÉER L'AVENIR DE L'ARCHITECTURE</p>
-            <p class="copyright">© 2025 ARCHITECT. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="artefact-distribution.js"></script>
+    <script src="radar.js"></script>
+    <script src="gamepad-config.js"></script>
+    <script src="fps.js"></script>
+    <script src="reseaux.js"></script>
+    <script src="artefact/dragonball.js"></script>
+    <script src="artefact/infinitystones.js"></script>
+    <script src="collection.js"></script>
+    <script src="stargate-library.js"></script>
+    <script src="speedaura.js"></script>
+    <script src="navette.js"></script>
+    <script src="elements/weapons.js"></script>
+    <script src="elements/porte-dorée.js"></script>
+    <script src="elements/hotel.js"></script>
+    <script src="elements/palace.js"></script>
+    <script src="elements/building.js"></script>
+    <!-- Fichiers manquants - désactivés -->
+    <!-- <script src="elements/sportwear.js"></script> -->
+    <!-- <script src="elements/pub.js"></script> -->
+    <!-- <script src="elements/panneau-holographique.js"></script> -->
+    <!-- <script src="elements/plateau-volant.js"></script> -->
+    <script src="hud/hud.js"></script>
+    <script src="hud/hud5.js"></script>
+    <script src="hud/hud-holographic.js"></script>
+    <script src="hud/hud-graphic.js"></script>
+    <script src="hud/hud-manager.js"></script>
 
-    <script>
-        // Navigation scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
+<script>
+    let scene, camera, renderer, whiteWorldGroup, fpsController, socialNetworksManager, navetteManager, shootingSystem, energyWeapon, dragonBallSystem, infinityStonesSystem, collectionSystem, stargateSystem, chevronInterface, speedAura, hudManager, radarSystem, goldenDoor;
+
+    // Variables pour les joysticks tactiles
+    const leftJoystick = { active: false, x: 0, y: 0, startX: 0, startY: 0 };
+    const rightJoystick = { active: false, x: 0, y: 0, startX: 0, startY: 0, firing: false, lastTap: 0 };
+
+    // Variable globale pour suivre quelle animation jouer
+    let currentAnimation = null;
+
+    // Cache pour optimisation des performances
+    let cachedImmobilierSign = null;
+    let cachedImmobilierPanel = null;
+    let cachedFloatingParticles = [];
+    let lastCacheUpdate = 0;
+    
+    window.onload = function() {
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js non chargé');
+            return;
+        }
+        init();
+    };
+    
+    function init() {
+        console.log('Initialisation du Monde Blanc Infini...');
+        
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000); // Ciel noir permanent
+        window.scene = scene;
+        
+        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 2, 40); // Derrière Sportwear (qui est à Z=-30), regarde vers -Z
+        // Pas de rotation - regarde naturellement vers l'avant (-Z)
+        
+        window.camera = camera;
+        
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('container').appendChild(renderer.domElement);
+        window.renderer = renderer;
+        
+        // Initialiser le système radar
+        radarSystem = new RadarSystem(scene, camera);
+        radarSystem.initialize('radar-svg'); // INITIALISER le radar
+        window.radarSystem = radarSystem;
+        
+        // Initialiser le gestionnaire de HUDs
+        hudManager = new HUDManager();
+        hudManager.initialize();
+        window.hudManager = hudManager;
+        
+        // Initialiser le contrôleur manette
+        window.gamepadController = initGamepadController();
+        
+        createWhiteInfiniteWorld();
+        
+        socialNetworksManager = new SocialNetworksManager(scene);
+        socialNetworksManager.createSocialCards();
+        window.socialNetworksManager = socialNetworksManager;
+
+        // Supprimer le cercle bleu foncé et la grille (avec protection et délai)
+        setTimeout(() => {
+            if (scene && typeof scene.traverse === 'function') {
+                scene.traverse((object) => {
+                    // Supprimer CircleGeometry (cercle bleu foncé)
+                    if (object instanceof THREE.Mesh &&
+                        object.geometry instanceof THREE.CircleGeometry) {
+                        const parent = object.parent;
+                        if (parent) {
+                            console.log('🗑️ Suppression du cercle au sol');
+                            parent.remove(object);
+                        }
+                    }
+                    // Supprimer GridHelper (grille)
+                    if (object instanceof THREE.GridHelper) {
+                        const parent = object.parent;
+                        if (parent) {
+                            console.log('🗑️ Suppression de la grille');
+                            parent.remove(object);
+                        }
+                    }
+                    // Supprimer PlaneGeometry au sol
+                    if (object instanceof THREE.Mesh &&
+                        object.geometry instanceof THREE.PlaneGeometry &&
+                        object.position.y < 1) {
+                        const parent = object.parent;
+                        if (parent) {
+                            console.log('🗑️ Suppression du plan au sol');
+                            parent.remove(object);
+                        }
+                    }
+                });
+                console.log('✅ Nettoyage du sol terminé');
             } else {
-                navbar.classList.remove('scrolled');
+                console.warn('⚠️ Scene non disponible pour le nettoyage');
             }
-        });
+        }, 150); // Délai de 150ms pour garantir que scene est prête
 
-        // Parallax vertical pour Hero
-        const parallaxBg = document.querySelector('.parallax-bg');
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            if (parallaxBg) {
-                parallaxBg.style.transform = `translateY(${scrolled * 0.5}px)`;
+        // Déplacer les cartes réseaux 5x plus loin (conserve la hauteur)
+        if (socialNetworksManager) {
+            // Si les cartes sont dans un tableau 'cards'
+            if (Array.isArray(socialNetworksManager.cards) && socialNetworksManager.cards.length) {
+                socialNetworksManager.cards.forEach(card => {
+                    if (card && card.position) {
+                        card.position.set(card.position.x * 5, card.position.y, card.position.z * 5);
+                    }
+                });
+                console.log('📡 Cartes réseaux déplacées x5');
             }
-        });
-
-        // Parallax horizontal pour les projets (scroll + souris)
-        const horizontalWrapper = document.querySelector('.horizontal-scroll-wrapper');
-        const projetsSection = document.getElementById('projets');
-        let mouseScrollOffset = 0;
+            // Si un groupe conteneur existe
+            if (socialNetworksManager.group && socialNetworksManager.group.position) {
+                socialNetworksManager.group.position.set(
+                    socialNetworksManager.group.position.x * 5,
+                    socialNetworksManager.group.position.y,
+                    socialNetworksManager.group.position.z * 5
+                );
+            }
+        }
         
-        // Contrôle au scroll
-        window.addEventListener('scroll', () => {
-            if (horizontalWrapper && projetsSection) {
-                const rect = projetsSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-                
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const maxScroll = horizontalWrapper.scrollWidth - window.innerWidth;
-                    const scrollOffset = progress * maxScroll;
-                    horizontalWrapper.style.transform = `translateX(-${scrollOffset + mouseScrollOffset}px)`;
-                }
-            }
-        });
-
-        // Contrôle à la souris
-        if (projetsSection) {
-            projetsSection.addEventListener('mousemove', (e) => {
-                const rect = projetsSection.getBoundingClientRect();
-                const mouseX = e.clientX;
-                const sectionWidth = rect.width;
-                const mouseProgress = mouseX / sectionWidth;
-                
-                // Calculer le déplacement basé sur la position de la souris
-                const maxMouseScroll = 300; // Amplitude du mouvement
-                mouseScrollOffset = (mouseProgress - 0.5) * maxMouseScroll;
-                
-                // Recalculer la position avec l'offset de la souris
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-                
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const maxScroll = horizontalWrapper.scrollWidth - window.innerWidth;
-                    const scrollOffset = progress * maxScroll;
-                    horizontalWrapper.style.transform = `translateX(-${scrollOffset + mouseScrollOffset}px)`;
-                }
-            });
-
-            // Réinitialiser quand la souris quitte
-            projetsSection.addEventListener('mouseleave', () => {
-                mouseScrollOffset = 0;
-                const rect = projetsSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-                
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const maxScroll = horizontalWrapper.scrollWidth - window.innerWidth;
-                    const scrollOffset = progress * maxScroll;
-                    horizontalWrapper.style.transform = `translateX(-${scrollOffset}px)`;
-                }
-            });
-        }
-
-        // Parallax en profondeur (zoom) pour About
-        const depthBg = document.querySelector('.depth-parallax-bg');
-        const aboutSection = document.getElementById('about');
+        navetteManager = new NavetteManager(scene, camera);
+        navetteManager.createNavette();
+        window.navetteManager = navetteManager;
         
-        window.addEventListener('scroll', () => {
-            if (depthBg && aboutSection) {
-                const rect = aboutSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-                
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = 1 - (sectionTop / window.innerHeight);
-                    const scale = 1.5 - (progress * 0.3);
-                    depthBg.style.transform = `translate(-50%, -50%) scale(${scale})`;
-                }
-            }
+        // Créer la salle d'arcade
+        createArcadeRoom();
+        window.arcadeEntrance = new THREE.Vector3(2500, 2, -1400); // Position de l'entrée (devant la salle)
+        
+        // Exposer les managers pour le système de verrouillage de cibles
+        // Note: index.html n'a pas de planètes, mais on peut verrouiller les cartes sociales et artefacts
+        
+        shootingSystem = new ShootingSystem(scene, navetteManager, camera);
+        window.shootingSystem = shootingSystem;
+        
+        // Initialiser le système d'armes énergétiques
+        energyWeapon = new EnergyWeaponSystem(scene, camera);
+        window.energyWeapon = energyWeapon;
+        
+        // Initialiser le système de distribution
+        const artefactDistributor = new ArtefactDistribution();
+        
+        // PHASE 1 : Créer TOUS les artefacts pour l'animation de dispersion initiale
+        dragonBallSystem = new DragonBallSystem(scene, camera);
+        dragonBallSystem.createDragonBalls([1, 2, 3, 4, 5, 6, 7]); // Toutes les Boules de cristal
+        
+        // Agrandir les Boules de cristal pour les rendre visibles
+        dragonBallSystem.dragonBalls.forEach(ball => {
+            ball.scale.set(5, 5, 5); // Taille visible dans le monde blanc
         });
-
-        // Parallax 3D en profondeur pour Services
-        const servicesBg = document.querySelector('.services-bg');
-        const servicesSection = document.getElementById('services');
-
-        window.addEventListener('scroll', () => {
-            if (servicesBg && servicesSection) {
-                const rect = servicesSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    // Effet parallax vertical avec zoom progressif
-                    const translateY = progress * 200 - 100;
-                    const scale = 1 + (progress * 0.2);
-                    servicesBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                }
-            }
+        
+        window.dragonBallSystem = dragonBallSystem;
+        
+        infinityStonesSystem = new InfinityStonesSystem(scene, camera);
+        infinityStonesSystem.createInfinityStones(['Space', 'Mind', 'Reality', 'Power', 'Time', 'Soul']); // Toutes les Infinity Stones
+        
+        // Agrandir les Infinity Stones pour les rendre visibles
+        infinityStonesSystem.stones.forEach(stone => {
+            stone.scale.set(8, 8, 8); // Taille visible dans le monde blanc
         });
+        
+        window.infinityStonesSystem = infinityStonesSystem;
+        
+        // PHASE 2 : Après l'animation, garder seulement les artefacts assignés à index
+        // Récupérer les artefacts qui doivent rester sur index
+        const myArtefacts = artefactDistributor.getArtefactsForWorld('index');
+        const myDragonBallsIds = myArtefacts.filter(a => a.type === 'dragonball').map(a => a.id);
+        const myInfinityStonesNames = myArtefacts.filter(a => a.type === 'infinitystone').map(a => a.id);
+        
+        console.log('🌍 Index - Artefacts assignés après dispersion:', {
+            dragonBalls: myDragonBallsIds,
+            infinityStones: myInfinityStonesNames
+        });
+        
+        // Marquer les artefacts qui doivent être supprimés après l'animation
+        dragonBallSystem.dragonBalls.forEach(ball => {
+            const starCount = ball.userData.stars;
+            ball.userData.shouldRemoveAfterAnimation = !myDragonBallsIds.includes(starCount);
+        });
+        
+        infinityStonesSystem.stones.forEach(stone => {
+            const stoneName = stone.userData.stoneName;
+            stone.userData.shouldRemoveAfterAnimation = !myInfinityStonesNames.includes(stoneName);
+        });
+        
+        // Démarrer l'animation seulement s'il y a des artefacts
+        if (myDragonBallsIds.length > 0 || myInfinityStonesNames.length > 0) {
+            setTimeout(() => {
+                startAnimationSequence();
+            }, 2000);
+        }
+        
+        collectionSystem = new CollectionSystem(scene, camera, dragonBallSystem, infinityStonesSystem);
+        collectionSystem.collectionDistance = 50; // Distance adaptée aux artefacts agrandis
+        window.collectionSystem = collectionSystem;
+        
+        // Masquer les artefacts déjà collectés
+        collectionSystem.hideCollectedArtefacts();
 
-        // Parallax 3D avec mouvement de la souris pour Services
-        if (servicesSection && servicesBg) {
-            servicesSection.addEventListener('mousemove', (e) => {
-                const rect = servicesSection.getBoundingClientRect();
-                const mouseX = (e.clientX - rect.left) / rect.width;
-                const mouseY = (e.clientY - rect.top) / rect.height;
+        // Initialiser le système Stargate
+        if (typeof StargateSystem !== 'undefined') {
+            stargateSystem = new StargateSystem(scene, camera);
+            if (typeof ChevronInterface !== 'undefined') {
+                chevronInterface = new ChevronInterface(stargateSystem);
+            }
+            window.stargateSystem = stargateSystem;
+            window.chevronInterface = chevronInterface;
+            console.log('🌀 Stargate initialisé dans index.html');
+        } else {
+            console.warn('⚠️ StargateSystem non disponible');
+        }
 
-                // Calculer le déplacement 3D basé sur la position de la souris
-                const moveX = (mouseX - 0.5) * 50;
-                const moveY = (mouseY - 0.5) * 50;
+        // Initialiser la Porte Dorée
+        goldenDoor = new GoldenDoor(scene);
+        goldenDoor.setAudioFile('Unreal Engine 4 - Stargate Showcase.mp3');
+        goldenDoor.createDoor();
+        goldenDoor.setVisible(false); // Invisible par défaut
+        window.goldenDoor = goldenDoor;
 
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
+        // initialiser le streetwear (DÉSACTIVÉ - fichiers manquants)
+        // const sportwear = new Sportwear(scene);
+        // sportwear.createSportwear();
+        // window.sportwear = sportwear;
 
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const translateY = progress * 200 - 100;
-                    const scale = 1 + (progress * 0.2);
-                    servicesBg.style.transform = `translateY(${translateY}px) translateX(${moveX}px) scale(${scale})`;
-                }
+        // Initialiser les panneaux publicitaires au-dessus de Sportwear (DÉSACTIVÉ - fichiers manquants)
+        // const publicityPanels = new PublicityPanels(scene);
+        // publicityPanels.createPanels();
+        // window.publicityPanels = publicityPanels;
+
+        // Initialiser le panneau holographique au-dessus du Building (DÉSACTIVÉ - fichiers manquants)
+        // const panneauHolographique = new PanneauHolographique(scene);
+        // panneauHolographique.createPanel();
+        // window.panneauHolographique = panneauHolographique;
+
+        // Initialiser le système d'aura de vitesse
+        speedAura = new SpeedAuraSystem(scene, navetteManager);
+        speedAura.initialize();
+        speedAura.setActive(false); // DÉSACTIVÉ par défaut
+        window.speedAura = speedAura;
+
+        // Variables de combat
+        let kills = 0;
+        let money = 0;
+
+        // Créer le Stargate
+        stargateSystem.createStargate();
+
+        // CRÉER FPS CONTROLLER D'ABORD
+        fpsController = new FPSController(camera, renderer);
+        fpsController.setGroundLevel(2); // Empêcher de descendre sous le sol (Y=2, soit 2px au-dessus)
+        window.fpsController = fpsController;
+        socialNetworksManager.setupCardInteractions(fpsController);
+
+        // Initialiser le plateau volant APRÈS le FPS controller (DÉSACTIVÉ - fichiers manquants)
+        // const plateauVolant = new PlateauVolant(scene, camera, fpsController);
+        // plateauVolant.createPlateau();
+        // fpsController.setPlateauVolant(plateauVolant);
+        // window.plateauVolant = plateauVolant;
+        
+        // Initialiser les joysticks tactiles
+        setupMobileJoysticks();
+        
+        window.addEventListener('resize', onWindowResize);
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('mousedown', onMouseDown);
+        document.addEventListener('mouseup', onMouseUp);
+        
+        // Gestionnaire contextmenu supprimé - géré dans onMouseDown
+        
+        document.getElementById('loading').style.display = 'none';
+        
+        // === ÉVÉNEMENTS TERMINAL RÉTRO ===
+        const closeBtn = document.getElementById('closeBtn');
+        const modalOverlay = document.getElementById('controls-modal');
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleControlsModal();
             });
-
-            servicesSection.addEventListener('mouseleave', () => {
-                const rect = servicesSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const translateY = progress * 200 - 100;
-                    const scale = 1 + (progress * 0.2);
-                    servicesBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
+        }
+        
+        if (modalOverlay) {
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) {
+                    toggleControlsModal();
                 }
             });
         }
-        const observerOptions = {
-            threshold: 0.2,
-            rootMargin: '0px 0px -100px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        // Observer pour les titres et contenus
-        document.querySelectorAll('.section-title, .about-content, .service-item, .contact-content').forEach(el => {
-            observer.observe(el);
+        
+        animate();
+    }
+    
+    function createWhiteInfiniteWorld() {
+        whiteWorldGroup = new THREE.Group();
+        
+        // Sol blanc
+        const whiteMaterial = new THREE.MeshPhongMaterial({ 
+            color: 0xffffff, 
+            shininess: 100 
         });
-
-        // Animation des service items avec délai
-        const serviceItems = document.querySelectorAll('.service-item');
-        serviceItems.forEach((item, index) => {
-            item.style.transitionDelay = `${index * 0.1}s`;
+        
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), whiteMaterial);
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = 0;
+        floor.receiveShadow = true;
+        whiteWorldGroup.add(floor);
+        
+        // Lumières adaptées au fond noir
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+        whiteWorldGroup.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(0, 1000, 1000);
+        directionalLight.castShadow = true;
+        whiteWorldGroup.add(directionalLight);
+        
+        scene.add(whiteWorldGroup);
+    }
+    
+    function createArcadeRoom() {
+        const arcadeGroup = new THREE.Group();
+        
+        // Sol de la salle (beaucoup plus grand)
+        const floorGeo = new THREE.BoxGeometry(250, 2.5, 200);
+        const floorMat = new THREE.MeshPhongMaterial({ 
+            color: 0x111122,
+            specular: 0x222244,
+            shininess: 100
         });
-
-        // Parallax 3D en profondeur pour Contact
-        const contactBg = document.querySelector('.contact-bg');
-        const contactSection = document.getElementById('contact');
-
-        window.addEventListener('scroll', () => {
-            if (contactBg && contactSection) {
-                const rect = contactSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    // Effet zoom progressif en profondeur
-                    const scale = 1.2 + (progress * 0.4);
-                    const translateY = (progress - 0.5) * 150;
-                    contactBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                }
+        const floor = new THREE.Mesh(floorGeo, floorMat);
+        floor.receiveShadow = true;
+        arcadeGroup.add(floor);
+        
+        // Murs (plus hauts et plus larges)
+        const wallMat = new THREE.MeshPhongMaterial({ 
+            color: 0x0a0a1a,
+            specular: 0x111133,
+            shininess: 50
+        });
+        
+        // Mur arrière
+        const backWallGeo = new THREE.BoxGeometry(250, 150, 2.5);
+        const backWall = new THREE.Mesh(backWallGeo, wallMat);
+        backWall.position.set(0, 75, -100);
+        backWall.castShadow = true;
+        arcadeGroup.add(backWall);
+        
+        // Murs latéraux
+        const sideWallGeo = new THREE.BoxGeometry(2.5, 150, 200);
+        const leftWall = new THREE.Mesh(sideWallGeo, wallMat);
+        leftWall.position.set(-125, 75, 0);
+        leftWall.castShadow = true;
+        arcadeGroup.add(leftWall);
+        
+        const rightWall = new THREE.Mesh(sideWallGeo, wallMat);
+        rightWall.position.set(125, 75, 0);
+        rightWall.castShadow = true;
+        arcadeGroup.add(rightWall);
+        
+        // Plafond
+        const ceilingGeo = new THREE.BoxGeometry(250, 2.5, 200);
+        const ceilingMat = new THREE.MeshPhongMaterial({ 
+            color: 0x0a0a1a,
+            emissive: 0x000033,
+            emissiveIntensity: 0.2
+        });
+        const ceiling = new THREE.Mesh(ceilingGeo, ceilingMat);
+        ceiling.position.y = 150;
+        arcadeGroup.add(ceiling);
+        
+        // Colonnes d'entrée lumineuses
+        const columnGeo = new THREE.CylinderGeometry(7.5, 10, 150, 8);
+        const columnMat = new THREE.MeshPhongMaterial({
+            color: 0x2a2a4a,
+            emissive: 0x000044,
+            emissiveIntensity: 0.3
+        });
+        
+        [-100, 100].forEach(x => {
+            const column = new THREE.Mesh(columnGeo, columnMat);
+            column.position.set(x, 75, 100);
+            column.castShadow = true;
+            arcadeGroup.add(column);
+            
+            // Anneaux lumineux sur les colonnes
+            for (let y = 25; y <= 125; y += 25) {
+                const ringGeo = new THREE.TorusGeometry(12.5, 0.75, 8, 16);
+                const ringMat = new THREE.MeshPhongMaterial({
+                    color: 0x00ffff,
+                    emissive: 0x00ffff,
+                    emissiveIntensity: 0.9
+                });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.position.set(x, y, 100);
+                ring.rotation.x = Math.PI / 2;
+                arcadeGroup.add(ring);
             }
         });
-
-        // Parallax 3D avec mouvement de la souris pour Contact
-        if (contactSection && contactBg) {
-            contactSection.addEventListener('mousemove', (e) => {
-                const rect = contactSection.getBoundingClientRect();
-                const mouseX = (e.clientX - rect.left) / rect.width;
-                const mouseY = (e.clientY - rect.top) / rect.height;
-
-                // Effet de profondeur 3D
-                const moveX = (mouseX - 0.5) * 80;
-                const moveY = (mouseY - 0.5) * 80;
-
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const scale = 1.2 + (progress * 0.4);
-                    const translateY = (progress - 0.5) * 150;
-                    contactBg.style.transform = `translateY(${translateY}px) translateX(${moveX}px) scale(${scale}) rotateX(${(mouseY - 0.5) * 3}deg) rotateY(${(mouseX - 0.5) * 3}deg)`;
-                }
+        
+        // Machines d'arcade (plus nombreuses et plus grandes)
+        const machineColors = [
+            { main: 0x9400d3, screen: 0xff00ff },
+            { main: 0x0000ff, screen: 0x00ffff },
+            { main: 0x00ff00, screen: 0xffff00 },
+            { main: 0xff4500, screen: 0xff6600 },
+            { main: 0xff1493, screen: 0xff69b4 },
+            { main: 0xffff00, screen: 0xff00ff }
+        ];
+        
+        machineColors.forEach((colors, i) => {
+            const machineGroup = new THREE.Group();
+            
+            // Corps
+            const bodyGeo = new THREE.BoxGeometry(20, 35, 15);
+            const bodyMat = new THREE.MeshPhongMaterial({
+                color: 0x1a1a2e,
+                specular: 0x333366,
+                shininess: 80
             });
-
-            contactSection.addEventListener('mouseleave', () => {
-                const rect = contactSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const scale = 1.2 + (progress * 0.4);
-                    const translateY = (progress - 0.5) * 150;
-                    contactBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                }
+            const body = new THREE.Mesh(bodyGeo, bodyMat);
+            body.castShadow = true;
+            machineGroup.add(body);
+            
+            // Écran
+            const screenGeo = new THREE.BoxGeometry(16, 12.5, 1);
+            const screenMat = new THREE.MeshPhongMaterial({
+                color: colors.screen,
+                emissive: colors.screen,
+                emissiveIntensity: 0.7
             });
+            const screen = new THREE.Mesh(screenGeo, screenMat);
+            screen.position.set(0, 7.5, 8);
+            machineGroup.add(screen);
+            
+            // Panel
+            const panelGeo = new THREE.BoxGeometry(17.5, 5, 7.5);
+            const panelMat = new THREE.MeshPhongMaterial({
+                color: colors.main,
+                emissive: colors.main,
+                emissiveIntensity: 0.3
+            });
+            const panel = new THREE.Mesh(panelGeo, panelMat);
+            panel.position.set(0, -6, 5);
+            panel.rotation.x = -0.3;
+            machineGroup.add(panel);
+
+            machineGroup.position.set(-75 + (i % 3) * 75, 20, -50 + Math.floor(i / 3) * 50);
+            arcadeGroup.add(machineGroup);
+        });
+        
+        // Lumières néon
+        const neonLight1 = new THREE.PointLight(0x00ffff, 10, 150);
+        neonLight1.position.set(-75, 125, 0);
+        arcadeGroup.add(neonLight1);
+        
+        const neonLight2 = new THREE.PointLight(0xff00ff, 10, 150);
+        neonLight2.position.set(75, 125, 0);
+        arcadeGroup.add(neonLight2);
+        
+        // PANNEAU CIRCULAIRE HOLOGRAPHIQUE GÉANT AU-DESSUS DU TOIT
+        const signGroup = new THREE.Group();
+        
+        // Créer un cercle lumineux géant
+        const circleGeo = new THREE.CylinderGeometry(150, 150, 10, 32);
+        const circleMat = new THREE.MeshBasicMaterial({
+            color: 0xff00ff,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+        const circleMesh = new THREE.Mesh(circleGeo, circleMat);
+        signGroup.add(circleMesh);
+        
+        // Anneau extérieur lumineux
+        const ringOuterGeo = new THREE.TorusGeometry(150, 5, 8, 32);
+        const ringOuterMat = new THREE.MeshStandardMaterial({
+            color: 0xff00ff,
+            emissive: 0xff00ff,
+            emissiveIntensity: 1,
+            transparent: true,
+            opacity: 0.9
+        });
+        const ringOuter = new THREE.Mesh(ringOuterGeo, ringOuterMat);
+        ringOuter.rotation.x = Math.PI / 2;
+        signGroup.add(ringOuter);
+        
+        // Anneaux concentriques lumineux autour du panneau
+        for (let i = 1; i <= 3; i++) {
+            const ringGeo = new THREE.TorusGeometry(150 + i * 25, 2.5, 8, 32);
+            const ringMat = new THREE.MeshStandardMaterial({
+                color: 0xff00ff,
+                emissive: 0xff00ff,
+                emissiveIntensity: 0.8 - i * 0.2,
+                transparent: true,
+                opacity: 0.7 - i * 0.2
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            ring.position.y = i * 2.5;
+            signGroup.add(ring);
+        }
+        
+        // Rayons lumineux depuis le panneau vers le sol
+        for (let i = 0; i < 8; i++) {
+            const angle = (i / 8) * Math.PI * 2;
+            const rayGeo = new THREE.CylinderGeometry(1, 10, 250, 8);
+            const rayMat = new THREE.MeshBasicMaterial({
+                color: 0xff00ff,
+                transparent: true,
+                opacity: 0.3
+            });
+            const ray = new THREE.Mesh(rayGeo, rayMat);
+            ray.position.set(
+                Math.cos(angle) * 125,
+                -125,
+                Math.sin(angle) * 125
+            );
+            signGroup.add(ray);
+        }
+        
+        // Texte "ARCADE" en 3D géant
+        const letters = ['A', 'R', 'C', 'A', 'D', 'E'];
+        letters.forEach((letter, i) => {
+            const letterGeo = new THREE.BoxGeometry(30, 40, 5);
+            const letterMat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                emissive: 0xff00ff,
+                emissiveIntensity: 0.9,
+                transparent: true,
+                opacity: 0.95
+            });
+            const letterMesh = new THREE.Mesh(letterGeo, letterMat);
+            const angle = (i / letters.length) * Math.PI * 2 - Math.PI / 2;
+            letterMesh.position.set(
+                Math.cos(angle) * 75,
+                0,
+                Math.sin(angle) * 75
+            );
+            letterMesh.lookAt(0, 0, 0);
+            signGroup.add(letterMesh);
+        });
+        
+        // Particules holographiques
+        const particleGeo = new THREE.BufferGeometry();
+        const particleCount = 500;
+        const positions = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+            const angle = (i / particleCount) * Math.PI * 2;
+            const radius = 125 + Math.random() * 50;
+            positions.push(
+                Math.cos(angle) * radius,
+                (Math.random() - 0.5) * 25,
+                Math.sin(angle) * radius
+            );
+        }
+        
+        particleGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        const particleMat = new THREE.PointsMaterial({
+            color: 0xff00ff,
+            size: 1.5,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particleSystem = new THREE.Points(particleGeo, particleMat);
+        signGroup.add(particleSystem);
+        
+        // Spot lumineux pour éclairer le panneau depuis le bas
+        const spotLight = new THREE.SpotLight(0xff00ff, 15, 500, Math.PI / 3, 0.5, 1);
+        spotLight.position.set(0, 100, 0);
+        spotLight.target.position.set(0, 250, 0);
+        arcadeGroup.add(spotLight);
+        arcadeGroup.add(spotLight.target);
+        
+        signGroup.position.set(0, 250, 0); // Au-dessus du toit
+        signGroup.userData.isHolographicSign = true;
+        arcadeGroup.add(signGroup);
+        window.arcadeSign = signGroup;
+        
+        // Faisceau lumineux vertical vers le ciel
+        const beaconGeo = new THREE.CylinderGeometry(15, 40, 1000, 16);
+        const beaconMat = new THREE.MeshBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.2,
+            side: THREE.DoubleSide
+        });
+        const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+        beacon.position.y = 750;
+        arcadeGroup.add(beacon);
+
+        // Panneau holographique rond au-dessus du beacon
+        const topSignGroup = new THREE.Group();
+
+        // Disque principal du panneau (agrandi 10 fois: 5×2)
+        const topSignGeo = new THREE.CylinderGeometry(800, 800, 50, 32);
+        const topSignMat = new THREE.MeshBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        });
+        const topSignDisc = new THREE.Mesh(topSignGeo, topSignMat);
+        topSignGroup.add(topSignDisc);
+
+        // Anneau extérieur brillant (agrandi 10 fois: 5×2)
+        const topRingGeo = new THREE.TorusGeometry(800, 30, 8, 32);
+        const topRingMat = new THREE.MeshStandardMaterial({
+            color: 0x00ffff,
+            emissive: 0x00ffff,
+            emissiveIntensity: 1,
+            transparent: true,
+            opacity: 0.9
+        });
+        const topRing = new THREE.Mesh(topRingGeo, topRingMat);
+        topRing.rotation.x = Math.PI / 2;
+        topSignGroup.add(topRing);
+
+        // Anneaux concentriques (agrandi 10 fois: 5×2)
+        for (let i = 1; i <= 2; i++) {
+            const ringGeo = new THREE.TorusGeometry(800 - i * 150, 20, 8, 32);
+            const ringMat = new THREE.MeshStandardMaterial({
+                color: 0x00ffff,
+                emissive: 0x00ffff,
+                emissiveIntensity: 0.8 - i * 0.2,
+                transparent: true,
+                opacity: 0.7 - i * 0.15
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            topSignGroup.add(ring);
         }
 
-        // Parallax 3D en profondeur pour Footer
-        const footerBg = document.querySelector('.footer-bg');
-        const footerSection = document.querySelector('footer');
+        // Texte "ARCADE" en vraies lettres 3D MAGENTA
+        const loader = new THREE.FontLoader();
+        loader.load('https://threejs.org/examples/fonts/helvetiker_bold.typeface.json', function(font) {
+            const textGeo = new THREE.TextGeometry('ARCADE', {
+                font: font,
+                size: 200,
+                height: 30,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 5,
+                bevelSize: 3,
+                bevelOffset: 0,
+                bevelSegments: 5
+            });
 
-        window.addEventListener('scroll', () => {
-            if (footerBg && footerSection) {
-                const rect = footerSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
+            // Centrer le texte
+            textGeo.computeBoundingBox();
+            const centerOffset = -0.5 * (textGeo.boundingBox.max.x - textGeo.boundingBox.min.x);
 
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    // Effet zoom progressif en profondeur
-                    const scale = 1 + (progress * 0.3);
-                    const translateY = progress * 100 - 50;
-                    footerBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                }
-            }
+            const textMat = new THREE.MeshStandardMaterial({
+                color: 0xff00ff,
+                emissive: 0xff00ff,
+                emissiveIntensity: 2.0,
+                metalness: 0.3,
+                roughness: 0.4
+            });
+
+            const textMesh = new THREE.Mesh(textGeo, textMat);
+            textMesh.position.set(centerOffset, 0, 30);
+            textMesh.rotation.x = -Math.PI / 2; // Relever le texte pour qu'il soit vertical
+            textMesh.castShadow = true;
+
+            // Ajouter un contour lumineux blanc
+            const outlineGeo = new THREE.TextGeometry('ARCADE', {
+                font: font,
+                size: 210,
+                height: 25,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 5,
+                bevelSize: 3,
+                bevelOffset: 0,
+                bevelSegments: 5
+            });
+
+            const outlineMat = new THREE.MeshBasicMaterial({
+                color: 0xffffff,
+                transparent: true,
+                opacity: 0.5
+            });
+
+            const outlineMesh = new THREE.Mesh(outlineGeo, outlineMat);
+            outlineMesh.position.set(centerOffset - 5, 0, 25);
+            outlineMesh.rotation.x = -Math.PI / 2; // Relever le contour aussi
+
+            topSignGroup.add(outlineMesh);
+            topSignGroup.add(textMesh);
         });
 
-        // Parallax 3D avec mouvement de la souris pour Footer
-        if (footerSection && footerBg) {
-            footerSection.addEventListener('mousemove', (e) => {
-                const rect = footerSection.getBoundingClientRect();
-                const mouseX = (e.clientX - rect.left) / rect.width;
-                const mouseY = (e.clientY - rect.top) / rect.height;
+        // Rotation pour mettre à la verticale et positionner en hauteur (3 fois moins haut)
+        topSignGroup.rotation.x = Math.PI / 2; // Mettre à la verticale
+        topSignGroup.position.y = 3150; // 9450 / 3 = 3150
+        topSignGroup.userData.isTopArcadeSign = true;
+        arcadeGroup.add(topSignGroup);
+        window.arcadeTopSign = topSignGroup;
 
-                // Effet de profondeur 3D
-                const moveX = (mouseX - 0.5) * 60;
-                const moveY = (mouseY - 0.5) * 40;
-
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const scale = 1 + (progress * 0.3);
-                    const translateY = progress * 100 - 50;
-                    footerBg.style.transform = `translateY(${translateY}px) translateX(${moveX}px) scale(${scale}) rotateX(${(mouseY - 0.5) * 2}deg) rotateY(${(mouseX - 0.5) * 2}deg)`;
-                }
-            });
-
-            footerSection.addEventListener('mouseleave', () => {
-                const rect = footerSection.getBoundingClientRect();
-                const sectionTop = rect.top;
-                const sectionHeight = rect.height;
-
-                if (sectionTop < window.innerHeight && sectionTop > -sectionHeight) {
-                    const progress = (window.innerHeight - sectionTop) / (window.innerHeight + sectionHeight);
-                    const scale = 1 + (progress * 0.3);
-                    const translateY = progress * 100 - 50;
-                    footerBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                }
-            });
+        // Halo lumineux autour de la salle
+        const haloGeo = new THREE.RingGeometry(300, 400, 32);
+        const haloMat = new THREE.MeshBasicMaterial({
+            color: 0x00ffff,
+            transparent: true,
+            opacity: 0.2,
+            side: THREE.DoubleSide
+        });
+        const halo = new THREE.Mesh(haloGeo, haloMat);
+        halo.rotation.x = -Math.PI / 2;
+        halo.position.y = 0.1;
+        arcadeGroup.add(halo);
+        
+        // Deuxième halo plus petit
+        const halo2Geo = new THREE.RingGeometry(200, 250, 32);
+        const halo2Mat = new THREE.MeshBasicMaterial({
+            color: 0xff00ff,
+            transparent: true,
+            opacity: 0.15,
+            side: THREE.DoubleSide
+        });
+        const halo2 = new THREE.Mesh(halo2Geo, halo2Mat);
+        halo2.rotation.x = -Math.PI / 2;
+        halo2.position.y = 1;
+        arcadeGroup.add(halo2);
+        
+        // Système de particules flottantes autour de la salle
+        const floatingParticlesGeo = new THREE.BufferGeometry();
+        const particlePositions = [];
+        for (let i = 0; i < 1000; i++) {
+            particlePositions.push(
+                (Math.random() - 0.5) * 500,
+                Math.random() * 300,
+                (Math.random() - 0.5) * 500
+            );
         }
+        floatingParticlesGeo.setAttribute('position', new THREE.Float32BufferAttribute(particlePositions, 3));
+        const floatingParticlesMat = new THREE.PointsMaterial({
+            color: 0x00ffff,
+            size: 2.5,
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+        const floatingParticles = new THREE.Points(floatingParticlesGeo, floatingParticlesMat);
+        floatingParticles.userData.isFloatingParticles = true;
+        arcadeGroup.add(floatingParticles);
 
-        // Smooth scroll pour les liens de navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+        // Ajouter les userData pour le système de verrouillage
+        arcadeGroup.userData.isArcadeRoom = true;
+        
+        // Positionner la salle TRÈS LOIN
+        arcadeGroup.position.set(2500, 0, -1500);
+        scene.add(arcadeGroup);
+        
+        // Exposer globalement pour le système de verrouillage
+        window.arcadeRoom = arcadeGroup;
+        
+        console.log('🎮 Salle d\'arcade créée à la position:', arcadeGroup.position);
+        console.log('🎮 Arcade visible:', arcadeGroup.visible, '| Dans la scène:', arcadeGroup.parent === scene);
+        
+        // === CRÉATION DE LA STRUCTURE IMMOBILIER ===
+        createImmobilierBuilding();
+        
+        // === CRÉATION DU PALAIS DE LUXE ===
+        const palace = createSimplePalace();
+        if (palace) {
+            console.log('🏰 Palace visible:', palace.visible, '| Position:', palace.position, '| Dans la scène:', palace.parent === scene);
+        }
+        
+        // === CRÉATION DU BÂTIMENT STARK TOWER ===
+        const building = createSimpleBuilding();
+        if (building) {
+            console.log('🏢 Building visible:', building.visible, '| Position:', building.position, '| Dans la scène:', building.parent === scene);
+        }
+    }
+    
+    function createImmobilierBuilding() {
+        // === CRÉATION DE LA SCÈNE VAPORWAVE COMPLÈTE ===
+        
+        // Sol vaporwave (taille originale)
+        const groundGeometry = new THREE.PlaneGeometry(100, 100);
+        const groundMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1a4d,
+            roughness: 0.8,
+            metalness: 0.2
+        });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = 0;
+        // marquer pour déplacement ultérieur
+        ground.userData.isImmobilier = true;
+        scene.add(ground);
+        
+        // Eau devant le bâtiment (taille originale)
+        const waterGeometry = new THREE.PlaneGeometry(18, 35);
+        const waterMaterial = new THREE.MeshStandardMaterial({
+            color: 0x0a0a2e,
+            roughness: 0.1,
+            metalness: 0.9,
+            emissive: 0x1a1a4d,
+            emissiveIntensity: 0.3
+        });
+        const water = new THREE.Mesh(waterGeometry, waterMaterial);
+        water.rotation.x = -Math.PI / 2;
+        water.position.set(0, 0.05, 8);
+        water.userData.isImmobilier = true;
+        scene.add(water);
+        
+        // Groupe principal du bâtiment
+        const buildingGroup = new THREE.Group();
+        
+        // Corps principal (taille originale)
+        const mainBodyGeometry = new THREE.BoxGeometry(10, 12, 6);
+        const mainBodyMaterial = new THREE.MeshStandardMaterial({
+            color: 0x2a2a5a,
+            roughness: 0.5,
+            metalness: 0.3
+        });
+        const mainBody = new THREE.Mesh(mainBodyGeometry, mainBodyMaterial);
+        mainBody.position.set(0, 6, -5);
+        buildingGroup.add(mainBody);
+        
+        // Toit (taille originale)
+        const roofGeometry = new THREE.BoxGeometry(11, 0.5, 6.5);
+        const roofMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff0099,
+            emissive: 0xff0099,
+            emissiveIntensity: 0.8,
+            roughness: 0.3,
+            metalness: 0.7
+        });
+        const roof = new THREE.Mesh(roofGeometry, roofMaterial);
+        roof.position.set(0, 12.5, -5);
+        buildingGroup.add(roof);
+        
+        // Fonction pour créer des fenêtres arquées
+        function createArchedWindow(width, height, x, y, z, color) {
+            const windowGroup = new THREE.Group();
+            
+            const paneGeometry = new THREE.BoxGeometry(width, height, 0.2);
+            const paneMaterial = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 1.5,
+                transparent: true,
+                opacity: 0.9,
+                roughness: 0.1,
+                metalness: 0.5
+            });
+            const pane = new THREE.Mesh(paneGeometry, paneMaterial);
+            windowGroup.add(pane);
+            
+            const frameMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1a3a,
+                roughness: 0.6,
+                metalness: 0.4
+            });
+            
+            // Cadres verticaux
+            for (let i = -1; i <= 1; i++) {
+                const frameGeometry = new THREE.BoxGeometry(0.1, height, 0.25);
+                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+                frame.position.x = i * (width / 3);
+                windowGroup.add(frame);
+            }
+            
+            // Cadres horizontaux
+            for (let i = -2; i <= 2; i++) {
+                const frameGeometry = new THREE.BoxGeometry(width, 0.1, 0.25);
+                const frame = new THREE.Mesh(frameGeometry, frameMaterial);
+                frame.position.y = i * (height / 5);
+                windowGroup.add(frame);
+            }
+            
+            windowGroup.position.set(x, y, z);
+            return windowGroup;
+        }
+        
+        // Fenêtres du haut (taille originale)
+        const window1 = createArchedWindow(2.5, 5, -3, 8.5, -1.9, 0xff0099);
+        const window2 = createArchedWindow(2.5, 5, 0, 8.5, -1.9, 0x00ffff);
+        const window3 = createArchedWindow(2.5, 5, 3, 8.5, -1.9, 0xff0099);
+        buildingGroup.add(window1, window2, window3);
+        
+        // Fonction pour créer des arches inférieures
+        function createLowerArch(width, height, x, y, z, color) {
+            const archGroup = new THREE.Group();
+            
+            const archGeometry = new THREE.BoxGeometry(width, height, 0.3);
+            const archMaterial = new THREE.MeshStandardMaterial({
+                color: color,
+                emissive: color,
+                emissiveIntensity: 2,
+                transparent: true,
+                opacity: 0.95
+            });
+            const arch = new THREE.Mesh(archGeometry, archMaterial);
+            archGroup.add(arch);
+            
+            const glowLight = new THREE.PointLight(color, 3, 10);
+            glowLight.position.set(0, 0, 1);
+            archGroup.add(glowLight);
+            
+            archGroup.position.set(x, y, z);
+            return archGroup;
+        }
+        
+        // Arches inférieures (taille originale)
+        const arch1 = createLowerArch(2.2, 4, -3, 3, -1.8, 0xffdd33);
+        const arch2 = createLowerArch(2.2, 4, 0, 3, -1.8, 0xff0099);
+        const arch3 = createLowerArch(2.2, 4, 3, 3, -1.8, 0xffaa33);
+        buildingGroup.add(arch1, arch2, arch3);
+        
+        // Porte d'entrée (taille originale)
+        const doorGeometry = new THREE.BoxGeometry(1.2, 2.5, 0.2);
+        const doorMaterial = new THREE.MeshStandardMaterial({
+            color: 0xff6633,
+            emissive: 0xff6633,
+            emissiveIntensity: 1.5
+        });
+        const door = new THREE.Mesh(doorGeometry, doorMaterial);
+        door.position.set(0, 1.25, -1.7);
+        buildingGroup.add(door);
+        
+        // Zone de téléportation invisible au centre (taille originale)
+        const teleportGeometry = new THREE.CylinderGeometry(3, 3, 0.1, 16);
+        const teleportMaterial = new THREE.MeshBasicMaterial({
+            color: 0xff0099,
+            transparent: true,
+            opacity: 0.1,
+            visible: false
+        });
+        const teleportZone = new THREE.Mesh(teleportGeometry, teleportMaterial);
+        teleportZone.position.set(0, 0.05, -2.5);
+        teleportZone.userData.isTeleportZone = true;
+        teleportZone.userData.teleportUrl = 'https://imo-sigma.vercel.app/#properties';
+        buildingGroup.add(teleportZone);
+        
+        // Bâtiments latéraux (taille originale)
+        function createSideBuilding(x, z) {
+            const sideGeometry = new THREE.BoxGeometry(3, 15, 3);
+            const sideMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a1a3a,
+                roughness: 0.7,
+                metalness: 0.3
+            });
+            const sideBuilding = new THREE.Mesh(sideGeometry, sideMaterial);
+            sideBuilding.position.set(x, 7.5, z);
+            
+            // Petites fenêtres aléatoires (taille originale)
+            for (let i = 0; i < 8; i++) {
+                if (Math.random() > 0.6) {
+                    const windowGeo = new THREE.BoxGeometry(0.4, 0.6, 0.1);
+                    const windowMat = new THREE.MeshStandardMaterial({
+                        color: 0xffdd33,
+                        emissive: 0xffdd33,
+                        emissiveIntensity: 2
                     });
+                    const smallWindow = new THREE.Mesh(windowGeo, windowMat);
+                    smallWindow.position.set(
+                        x + (Math.random() - 0.5) * 2,
+                        2 + i * 1.5,
+                        z + 1.6
+                    );
+                    scene.add(smallWindow);
+                }
+            }
+            
+            return sideBuilding;
+        }
+        
+        scene.add(createSideBuilding(-10, -8));
+        scene.add(createSideBuilding(10, -8));
+        
+        // Palmiers (taille originale)
+        function createPalmTree(x, z) {
+            const treeGroup = new THREE.Group();
+            
+            // Tronc (taille originale)
+            const trunkGeometry = new THREE.CylinderGeometry(0.2, 0.3, 5, 8);
+            const trunkMaterial = new THREE.MeshStandardMaterial({
+                color: 0x3a2a1a,
+                roughness: 0.9
+            });
+            const trunk = new THREE.Mesh(trunkGeometry, trunkMaterial);
+            trunk.position.y = 2.5;
+            treeGroup.add(trunk);
+            
+            // Feuilles (taille originale)
+            const leavesMaterial = new THREE.MeshStandardMaterial({
+                color: 0x1a3a2a,
+                roughness: 0.8
+            });
+            
+            for (let i = 0; i < 6; i++) {
+                const leafGeometry = new THREE.ConeGeometry(0.5, 3, 4);
+                const leaf = new THREE.Mesh(leafGeometry, leavesMaterial);
+                leaf.position.y = 5;
+                leaf.rotation.z = (i * Math.PI) / 3;
+                leaf.rotation.x = Math.PI / 4;
+                treeGroup.add(leaf);
+            }
+            
+            treeGroup.position.set(x, 0, z);
+            // marquer le palmier pour déplacement
+            treeGroup.userData.isPalm = true;
+            return treeGroup;
+        }
+        
+        // Positions des palmiers (taille originale)
+        const palmPositions = [
+            [-8, 5], [-6, 8], [-4, 10],
+            [8, 5], [6, 8], [4, 10],
+            [-7, 12], [7, 12]
+        ];
+        
+        palmPositions.forEach(([x, z]) => {
+            const palm = createPalmTree(x, z);
+            scene.add(palm);
+        });
+        
+        // Après création : décaler tous les éléments immobiliers et palmiers x5 en X/Z
+        scene.traverse((obj) => {
+            if (!obj.position) return;
+            // déplacer palmiers
+            if (obj.userData && obj.userData.isPalm) {
+                obj.position.set(obj.position.x * 5, obj.position.y, obj.position.z * 5);
+            }
+            // déplacer sol/eau/bâtiment immobilier
+            if (obj.userData && obj.userData.isImmobilier) {
+                obj.position.set(obj.position.x * 5, obj.position.y, obj.position.z * 5);
+            }
+        });
+
+        console.log('🌴 Structure immobilier et palmiers déplacés x5');
+        // ...existing code...
+    }
+    
+    function createPalace() {
+        console.log('🏰 Création du palace de luxe...');
+        
+        try {
+            // Créer l'instance du palace
+            const palaceSystem = new PalaceSystem();
+            const palaceGroup = palaceSystem.create(scene, {
+                position: { x: 100, y: 0, z: -100 },
+                scale: 1,
+                teleportUrl: 'https://example.com/palace',
+                enableTeleport: true
+            });
+            
+            // Configuration des ombres
+            palaceGroup.traverse((child) => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
                 }
             });
+            
+            // Exposer globalement pour les animations et la téléportation
+            window.palaceSystem = palaceSystem;
+            window.palaceBuilding = palaceGroup;
+            
+            console.log('🏰 Palace créé avec succès !');
+            return palaceGroup;
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du palace:', error);
+            return null;
+        }
+    }
+    
+    function createBuilding() {
+        console.log('🏢 Création du bâtiment...');
+        try {
+            // Utiliser le BuildingSystem importé
+            const buildingSystem = new BuildingSystem();
+            const building = buildingSystem.createBuilding();
+            // Nouvelle position plus proche du point de départ
+            building.position.set(20, 0, -20); // Au lieu de (-100, 0, -100)
+            scene.add(building);
+            window.starkTower = building;
+            
+            console.log('🏢 Building créé avec succès !');
+            return building;
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du building:', error);
+            return null;
+        }
+    }
+    
+    function createSimplePalace() {
+        console.log('🏰 Création du palace...');
+        try {
+            const palaceSystem = new PalaceSystem();
+            const palace = palaceSystem.create(scene, {
+                position: { x: 800, y: 0, z: -800 },
+                scale: 5
+            });
+            window.palaceBuilding = palace;
+            console.log('🏰 Palace créé avec succès !');
+            return palace;
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du palace:', error);
+            return null;
+        }
+    }
+    
+    function createSimpleBuilding() {
+        console.log('🏢 Création du bâtiment...');
+        try {
+            const buildingSystem = new BuildingSystem();
+            const building = buildingSystem.create(scene, {
+                position: { x: -500, y: 0, z: -20 },
+                scale: 5
+            });
+
+            // Trouver et supprimer le sol circulaire
+            building.traverse((child) => {
+                if (child instanceof THREE.Mesh && 
+                    child.geometry instanceof THREE.CircleGeometry) {
+                    child.parent.remove(child);
+                }
+                // Supprimer aussi le GridHelper s'il existe
+                if (child instanceof THREE.GridHelper) {
+                    child.parent.remove(child);
+                }
+            });
+            
+            window.starkTower = building;
+            console.log('🏢 Building créé avec succès ! Sol circulaire supprimé.');
+            return building;
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du building:', error);
+            return null;
+        }
+    }
+    
+    function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    function onKeyDown(event) {
+        const key = event.key.toLowerCase();
+        
+        if (key === 'r') {
+            // Cycle entre les HUDs (aucun → classique → futuriste → aucun)
+            if (hudManager) hudManager.cycleHUD();
+        }
+        
+        if (key === 'f' && shootingSystem) {
+            shootingSystem.fireTriangleProjectiles();
+        }
+        
+        // === ANIMATIONS DES ARTEFACTS ===
+        if (key === 'b' && dragonBallSystem) {
+            console.log('🐉 Animation Boules de cristal déclenchée manuellement (touche B)');
+            dragonBallSystem.startAnimation();
+        }
+        
+        if (key === 'n' && infinityStonesSystem) {
+            console.log('💎 Animation Infinity Stones déclenchée manuellement (touche N)');
+            infinityStonesSystem.startAnimation();
+        }
+        
+        // === CONTRÔLES DE NAVIGATION DE LA NAVETTE ===
+        if (navetteManager && navetteManager.navette) {
+            const navette = navetteManager.navette;
+            
+            // Vitesses de mouvement avec multiplicateur
+            const baseSpeed = 2; // Vitesse de base réduite (était 500!)
+            const speedMultiplier = navetteManager.getCurrentSpeedMultiplier();
+            const moveSpeed = baseSpeed * speedMultiplier;
+            const rotateSpeed = 0.02; // Rotation aussi réduite
+            
+            // Contrôles de déplacement
+            if (key === 'w') {
+                navette.position.z -= moveSpeed;
+            } else if (key === 's') {
+                navette.position.z += moveSpeed;
+            } else if (key === 'a') {
+                navette.position.x -= moveSpeed;
+            } else if (key === 'd') {
+                navette.position.x += moveSpeed;
+            } else if (key === ' ') {
+                event.preventDefault();
+                navette.position.y += moveSpeed;
+            } else if (key === 'shift') {
+                navette.position.y -= moveSpeed;
+            } else if (key === 'q') {
+                navette.rotation.y += rotateSpeed;
+            } else if (key === 'e') {
+                navette.rotation.y -= rotateSpeed;
+            }
+        }
+        
+        // === CHANGEMENT DE VITESSE (uniquement sur le plateau volant) ===
+        if (key === 'v') {
+            // Vérifier si le joueur est sur le plateau
+            if (fpsController && typeof fpsController.isOnPlateau === 'function' && fpsController.isOnPlateau()) {
+                if (navetteManager && typeof navetteManager.cycleSpeedMode === 'function') {
+                    navetteManager.cycleSpeedMode();
+                    const multiplier = navetteManager.getCurrentSpeedMultiplier();
+                    console.log('🛸 Vitesse plateau changée - Mode:', navetteManager.speedMode, '- Multiplicateur:', multiplier);
+                }
+            } else {
+                console.log('⚠️ Changement de vitesse désactivé hors plateau');
+            }
+        }
+        
+        if (key === 'h') {
+        }
+        
+        // === ANIMATIONS DES ARTEFACTS ===
+        if (key === 'b' && dragonBallSystem) {
+            console.log('🐉 Animation Boules de cristal déclenchée manuellement (touche B)');
+            dragonBallSystem.startAnimation();
+        }
+        
+        if (key === 'n' && infinityStonesSystem) {
+            console.log('💎 Animation Infinity Stones déclenchée manuellement (touche N)');
+            infinityStonesSystem.startAnimation();
+        }
+        
+        // === CONTRÔLES DE NAVIGATION DE LA NAVETTE ===
+        if (navetteManager && navetteManager.navette) {
+            const navette = navetteManager.navette;
+            
+            // Vitesses de mouvement avec multiplicateur
+            const baseSpeed = 2; // Vitesse de base réduite (était 500!)
+            const speedMultiplier = navetteManager.getCurrentSpeedMultiplier();
+            const moveSpeed = baseSpeed * speedMultiplier;
+            const rotateSpeed = 0.02; // Rotation aussi réduite
+            
+            // Contrôles de déplacement
+            if (key === 'w') {
+                navette.position.z -= moveSpeed;
+            } else if (key === 's') {
+                navette.position.z += moveSpeed;
+            } else if (key === 'a') {
+                navette.position.x -= moveSpeed;
+            } else if (key === 'd') {
+                navette.position.x += moveSpeed;
+            } else if (key === ' ') {
+                event.preventDefault();
+                navette.position.y += moveSpeed;
+            } else if (key === 'shift') {
+                navette.position.y -= moveSpeed;
+            } else if (key === 'q') {
+                navette.rotation.y += rotateSpeed;
+            } else if (key === 'e') {
+                navette.rotation.y -= rotateSpeed;
+            }
+        }
+        
+        // === CHANGEMENT DE VITESSE (uniquement sur le plateau volant) ===
+        if (key === 'v') {
+            // Vérifier si le joueur est sur le plateau
+            if (fpsController && typeof fpsController.isOnPlateau === 'function' && fpsController.isOnPlateau()) {
+                if (navetteManager && typeof navetteManager.cycleSpeedMode === 'function') {
+                    navetteManager.cycleSpeedMode();
+                    const multiplier = navetteManager.getCurrentSpeedMultiplier();
+                    console.log('🛸 Vitesse plateau changée - Mode:', navetteManager.speedMode, '- Multiplicateur:', multiplier);
+                }
+            } else {
+                console.log('⚠️ Changement de vitesse désactivé hors plateau');
+            }
+        }
+        
+        if (key === 'h') {
+            if (hudManager) hudManager.toggleControlsModal();
+        }
+        
+        if (key === 'a' && collectionSystem) {
+            collectionSystem.collect();
+        }
+        
+        if (key === 'b' && collectionSystem) {
+            collectionSystem.reunite('balls');
+        }
+        
+        if (key === 'c' && collectionSystem) {
+            collectionSystem.reunite('stones');
+        }
+        
+        if (key === 'y' && collectionSystem) {
+            collectionSystem.reunite('balls');
+        }
+        
+        if (key === 'o') {
+            if (hudManager) hudManager.cycleRadarZoom();
+        }
+        
+        if (key === 'g' && stargateSystem) {
+            stargateSystem.toggleStargate();
+        }
+
+        if (key === 'e' && chevronInterface) {
+            chevronInterface.open();
+        }
+
+        // Touche K: Activer la Porte Dorée
+        if (key === 'k' && goldenDoor) {
+            if (!goldenDoor.group.visible) {
+                // Calculer la direction où regarde la caméra (projection horizontale)
+                const forward = new THREE.Vector3(0, 0, -1);
+                forward.applyQuaternion(camera.quaternion);
+
+                // Ignorer la composante verticale pour la direction horizontale
+                forward.y = 0;
+                forward.normalize();
+
+                // Positionner la porte devant la caméra TOUJOURS AU SOL (y=0)
+                goldenDoor.setPosition(
+                    camera.position.x + forward.x * 5,
+                    0, // Toujours au niveau du sol
+                    camera.position.z + forward.z * 5
+                );
+
+                // Orienter la porte vers la caméra
+                goldenDoor.setRotation(0, Math.atan2(forward.x, forward.z), 0);
+
+                goldenDoor.setVisible(true);
+                goldenDoor.startAnimation();
+                console.log('🚪 Porte Dorée activée au sol');
+            } else {
+                goldenDoor.setVisible(false);
+                goldenDoor.reset();
+                console.log('🚪 Porte Dorée désactivée');
+            }
+        }
+
+            if (key === 'u' && speedAura) {
+                speedAura.setActive(!speedAura.isActive);
+                console.log('Aura:', speedAura.isActive ? 'ON' : 'OFF');
+            }
+    }
+    
+    function onMouseDown(event) {
+        if (event.button === 0 && shootingSystem) {
+            // Clic gauche : empêcher le menu contextuel et tirer
+            event.preventDefault();
+            shootingSystem.leftMouseDown = true;
+            shootingSystem.fireTriangleProjectiles();
+            shootingSystem.startContinuousFire();
+        }
+        
+        if (event.button === 2 && shootingSystem) {
+            // Clic droit : missiles à tête chercheuse
+            event.preventDefault();
+            shootingSystem.rightMouseDown = true;
+            fireHomingMissileToTarget(); // Fonction personnalisée
+            // startHomingFire personnalisé
+            if (!shootingSystem.homingInterval) {
+                shootingSystem.homingInterval = setInterval(() => {
+                    if (shootingSystem.rightMouseDown) {
+                        fireHomingMissileToTarget();
+                    }
+                }, 200 * 1.5);
+            }
+        }
+        
+        if (event.button === 1) {
+            // Clic molette : armes énergétiques
+            event.preventDefault();
+            if (energyWeapon && navetteManager && navetteManager.navette) {
+                energyWeapon.startCharging(navetteManager.navette);
+            }
+        }
+    }
+    
+    function onMouseUp(event) {
+        if (event.button === 0 && shootingSystem) {
+            shootingSystem.leftMouseDown = false;
+            shootingSystem.stopContinuousFire();
+        }
+        
+        if (event.button === 2 && shootingSystem) {
+            shootingSystem.rightMouseDown = false;
+            shootingSystem.stopHomingFire();
+        }
+        
+        if (event.button === 1) {
+            // Relâcher la molette : lancer la boule d'énergie
+            event.preventDefault();
+            if (energyWeapon) {
+                energyWeapon.releaseCharge();
+            }
+        }
+    }
+    
+    // === GESTION DES JOYSTICKS TACTILES ===
+    function setupMobileJoysticks() {
+        const leftJoystickElement = document.getElementById('leftJoystick');
+        const rightJoystickElement = document.getElementById('rightJoystick');
+        const leftKnob = leftJoystickElement.querySelector('.joystick-knob');
+        const rightKnob = rightJoystickElement.querySelector('.joystick-knob');
+        
+        // Fonction générique de début de toucher
+        function handleJoystickStart(e, joystick, element) {
+            const touch = e.touches[0];
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            joystick.active = true;
+            joystick.startX = centerX;
+            joystick.startY = centerY;
+        }
+        
+        // Fonction générique de mouvement
+        function handleJoystickMove(e, joystick, knob) {
+            if (!joystick.active) return;
+            e.preventDefault();
+            
+            const touch = e.touches[0];
+            const deltaX = touch.clientX - joystick.startX;
+            const deltaY = touch.clientY - joystick.startY;
+            
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const maxDistance = 50;
+            
+            if (distance > maxDistance) {
+                const angle = Math.atan2(deltaY, deltaX);
+                joystick.x = Math.cos(angle) * maxDistance;
+                joystick.y = Math.sin(angle) * maxDistance;
+            } else {
+                joystick.x = deltaX;
+                joystick.y = deltaY;
+            }
+            
+            knob.style.transform = `translate(calc(-50% + ${joystick.x}px), calc(-50% + ${joystick.y}px))`;
+        }
+        
+        // Fonction générique de fin de toucher
+        function handleJoystickEnd(joystick, knob) {
+            joystick.active = false;
+            joystick.x = 0;
+            joystick.y = 0;
+            knob.style.transform = 'translate(-50%, -50%)';
+        }
+        
+        // JOYSTICK GAUCHE : Déplacement
+        leftJoystickElement.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleJoystickStart(e, leftJoystick, leftJoystickElement);
+        }, { passive: false });
+        
+        leftJoystickElement.addEventListener('touchmove', (e) => {
+            handleJoystickMove(e, leftJoystick, leftKnob);
+        }, { passive: false });
+        
+        leftJoystickElement.addEventListener('touchend', () => {
+            handleJoystickEnd(leftJoystick, leftKnob);
         });
-    </script>
+        
+        // JOYSTICK DROIT : Rotation caméra + Double-tap pour tirer
+        rightJoystickElement.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            
+            // Détection double-tap
+            const now = Date.now();
+            const timeSinceLastTap = now - rightJoystick.lastTap;
+            
+            if (timeSinceLastTap < 300) {
+                // Double-tap détecté
+                rightJoystick.firing = true;
+                rightJoystickElement.classList.add('firing');
+                console.log('🔥 Mode tir activé !');
+            }
+            
+            rightJoystick.lastTap = now;
+            handleJoystickStart(e, rightJoystick, rightJoystickElement);
+        }, { passive: false });
+        
+        rightJoystickElement.addEventListener('touchmove', (e) => {
+            handleJoystickMove(e, rightJoystick, rightKnob);
+            
+            // Si en mode tir, tirer en continu
+            if (rightJoystick.firing && shootingSystem) {
+                shootingSystem.fireTriangleProjectiles();
+            }
+        }, { passive: false });
+        
+        rightJoystickElement.addEventListener('touchend', () => {
+            handleJoystickEnd(rightJoystick, rightKnob);
+            
+            // Désactiver le mode tir
+            if (rightJoystick.firing) {
+                rightJoystick.firing = false;
+                rightJoystickElement.classList.remove('firing');
+                console.log('🔥 Mode tir désactivé');
+            }
+        });
+        
+        // BOUTON DE TIR : Tir triangulaire
+        const fireButton = document.getElementById('fireButton');
+        
+        fireButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Tirer immédiatement
+            if (shootingSystem) {
+                shootingSystem.fireTriangleProjectiles();
+            }
+        }, { passive: false });
+        
+        fireButton.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, { passive: false });
+        
+        // Empêcher le comportement par défaut
+        fireButton.addEventListener('click', (e) => {
+            e.preventDefault();
+        });
+        
+        // === SYSTÈME DE MENUS THÉMATIQUES ===
+        
+        // Fonction pour toggle un sous-menu
+        function toggleSubMenu(menuButton, subMenu) {
+            const isOpen = subMenu.classList.contains('show');
+            
+            // Fermer tous les sous-menus
+            document.querySelectorAll('.sub-menu').forEach(menu => {
+                menu.classList.remove('show');
+            });
+            document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Ouvrir/fermer le sous-menu cliqué
+            if (!isOpen) {
+                subMenu.classList.add('show');
+                menuButton.classList.add('active');
+            }
+        }
+        
+        // MENU NAVIGATION
+        const navMenuButton = document.getElementById('navMenuButton');
+        const navSubMenu = document.getElementById('navSubMenu');
+        
+        navMenuButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSubMenu(navMenuButton, navSubMenu);
+        }, { passive: false });
+        
+        // Radar - fonctionne avec tous les HUDs
+        let radarVisible = false;
+        document.getElementById('radarBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            radarVisible = !radarVisible;
+            
+            // Détecter quel HUD est actif
+            const hudClassic = document.getElementById('cockpit-hud');
+            const hud5 = document.getElementById('hud5-cockpit');
+            
+            let radarScreen = null;
+            
+            // Si HUD Classique est actif
+            if (hudClassic && hudClassic.style.display === 'block') {
+                radarScreen = document.getElementById('radar-screen');
+            }
+            // Si HUD5 Futuriste est actif
+            else if (hud5 && hud5.style.display === 'block') {
+                radarScreen = document.getElementById('hud5-radar-screen');
+            }
+            
+            if (radarScreen) {
+                if (radarVisible) {
+                    radarScreen.style.display = 'block';
+                    console.log('📡 Radar ON (HUD actif)');
+                    if (hudManager) hudManager.updateRadar();
+                } else {
+                    radarScreen.style.display = 'none';
+                    console.log('📡 Radar OFF');
+                }
+            } else {
+                console.log('⚠️ Aucun HUD actif - Radar non disponible');
+            }
+        }, { passive: false });
+        
+        // HUD
+        document.getElementById('hudBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (hudManager) {
+                hudManager.cycleHUD();
+                console.log('👁️ HUD changé');
+            }
+        }, { passive: false });
+        
+        // Vitesse
+        document.getElementById('speedBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (navetteManager && typeof navetteManager.cycleSpeedMode === 'function') {
+                navetteManager.cycleSpeedMode();
+                const multiplier = navetteManager.getCurrentSpeedMultiplier();
+                console.log('⚡ Vitesse:', navetteManager.speedMode, '- x' + multiplier);
+                
+                if (fpsController && typeof fpsController.setSpeedMultiplier === 'function') {
+                    fpsController.setSpeedMultiplier(multiplier);
+                }
+            }
+        }, { passive: false });
+        
+        // MENU COLLECTION
+        const collectMenuButton = document.getElementById('collectMenuButton');
+        const collectSubMenu = document.getElementById('collectSubMenu');
+        
+        collectMenuButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSubMenu(collectMenuButton, collectSubMenu);
+        }, { passive: false });
+        
+        // Collecter
+        document.getElementById('collectBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (collectionSystem) {
+                collectionSystem.collect();
+                console.log('🎯 Collecte effectuée');
+            }
+        }, { passive: false });
+        
+        // Réunir Boules de cristal
+        document.getElementById('dragonBallsBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (collectionSystem) {
+                collectionSystem.reunite('balls');
+                console.log('🐉 Boules de cristal réunies');
+            }
+        }, { passive: false });
+        
+        // Réunir Infinity Stones
+        document.getElementById('infinityStonesBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (collectionSystem) {
+                collectionSystem.reunite('stones');
+                console.log('💠 Infinity Stones réunies');
+            }
+        }, { passive: false });
+        
+        // MENU STARGATE
+        const stargateMenuButton = document.getElementById('stargateMenuButton');
+        const stargateSubMenu = document.getElementById('stargateSubMenu');
+        
+        stargateMenuButton.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSubMenu(stargateMenuButton, stargateSubMenu);
+        }, { passive: false });
+        
+        // Toggle Stargate
+        document.getElementById('stargateToggleBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (stargateSystem) {
+                stargateSystem.toggleStargate();
+                console.log('🌀 Stargate togglé');
+            }
+        }, { passive: false });
+        
+        // Interface Stargate
+        document.getElementById('stargateInterfaceBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (chevronInterface) {
+                chevronInterface.open();
+                console.log('⌨️ Interface Stargate ouverte');
+            }
+        }, { passive: false });
+        
+        // Fermer les sous-menus en touchant ailleurs
+        document.addEventListener('touchstart', (e) => {
+            if (!e.target.closest('.mobile-menu-btn') && !e.target.closest('.sub-menu')) {
+                document.querySelectorAll('.sub-menu').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+                document.querySelectorAll('.mobile-menu-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        });
+        
+        console.log('📱 Système de menus thématiques activé');
+    }
+    
+    // Fonction pour nettoyer les artefacts non assignés à index
+    function cleanupNonAssignedArtefacts() {
+        console.log('🧹 Nettoyage des artefacts non assignés à index...');
+        
+        // Nettoyer les Boules de cristal
+        if (dragonBallSystem && dragonBallSystem.dragonBalls) {
+            const ballsToRemove = [];
+            
+            dragonBallSystem.dragonBalls.forEach(ball => {
+                if (ball.userData.shouldRemoveAfterAnimation) {
+                    console.log(`🗑️ Suppression Boule de cristal ${ball.userData.stars}-étoile(s)`);
+                    scene.remove(ball);
+                    ballsToRemove.push(ball);
+                    
+                    // Retirer aussi du radar si présent
+                    if (radarSystem && radarSystem.trackedObjects) {
+                        const index = radarSystem.trackedObjects.indexOf(ball);
+                        if (index > -1) {
+                            radarSystem.trackedObjects.splice(index, 1);
+                        }
+                    }
+                }
+            });
+            
+            // Retirer des tableaux
+            ballsToRemove.forEach(ball => {
+                const index = dragonBallSystem.dragonBalls.indexOf(ball);
+                if (index > -1) {
+                    dragonBallSystem.dragonBalls.splice(index, 1);
+                }
+            });
+        }
+        
+        // Nettoyer les Infinity Stones
+        if (infinityStonesSystem && infinityStonesSystem.stones) {
+            const stonesToRemove = [];
+            
+            infinityStonesSystem.stones.forEach(stone => {
+                if (stone.userData.shouldRemoveAfterAnimation) {
+                    console.log(`🗑️ Suppression Infinity Stone: ${stone.userData.stoneName}`);
+                    scene.remove(stone);
+                    stonesToRemove.push(stone);
+                    
+                    // Retirer aussi du radar si présent
+                    if (radarSystem && radarSystem.trackedObjects) {
+                        const index = radarSystem.trackedObjects.indexOf(stone);
+                        if (index > -1) {
+                            radarSystem.trackedObjects.splice(index, 1);
+                        }
+                    }
+                }
+            });
+            
+            // Retirer des tableaux
+            stonesToRemove.forEach(stone => {
+                const index = infinityStonesSystem.stones.indexOf(stone);
+                if (index > -1) {
+                    infinityStonesSystem.stones.splice(index, 1);
+                }
+            });
+        }
+        
+        console.log('✅ Nettoyage terminé');
+        console.log('📊 Artefacts restants sur index:', {
+            dragonBalls: dragonBallSystem.dragonBalls.length,
+            infinityStones: infinityStonesSystem.stones.length
+        });
+    }
+    
+    // Fonction pour démarrer la séquence d'animations
+    function startAnimationSequence() {
+        if (currentAnimation === null) {
+            // Démarrer avec Boule de cristal
+            console.log('🎬 Début séquence : Boule de cristal');
+            window.dragonBallSystem.startAnimation();
+            currentAnimation = 'dragonball';
+        }
+    }
+    
+    // Fonction personnalisée pour tirer des missiles vers les cartes sociales
+    function fireHomingMissileToTarget() {
+        if (!shootingSystem || !navetteManager || !navetteManager.navette) return;
+        
+        const navette = navetteManager.navette;
+        
+        // Position de départ
+        const worldPos = new THREE.Vector3();
+        worldPos.copy(navette.position);
+        
+        // Direction de tir basée sur la caméra
+        const direction = new THREE.Vector3(0, 0, -1);
+        direction.applyQuaternion(camera.quaternion);
+        
+        // Trouver une cible (carte sociale ou autre)
+        let target = null;
+        
+        // Chercher une carte sociale comme cible
+        if (socialNetworksManager && socialNetworksManager.cards && socialNetworksManager.cards.length > 0) {
+            target = socialNetworksManager.cards[Math.floor(Math.random() * socialNetworksManager.cards.length)];
+        }
+        
+        if (!target) {
+            console.log('Aucune cible trouvée pour le missile');
+            return;
+        }
+        
+        console.log('Missile tiré vers cible');
+        
+        // Créer le missile
+        const geometry = new THREE.SphereGeometry(2, 8, 8);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xff00ff,
+            transparent: true,
+            opacity: 0.9
+        });
+        
+        const missile = new THREE.Mesh(geometry, material);
+        missile.position.copy(worldPos);
+        
+        missile.userData = {
+            velocity: direction.clone().multiplyScalar(9000 * 0.8),
+            lifetime: 5 * 1.5,
+            target: target,
+            isHoming: true
+        };
+        
+        scene.add(missile);
+        shootingSystem.homingMissiles.push(missile);
+    }
+    
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Optimisation: calculer Date.now() une seule fois au début
+        const currentTime = Date.now();
+        const timeInSeconds = currentTime * 0.001;
+
+        // Traiter les joysticks tactiles
+        if (leftJoystick.active || rightJoystick.active) {
+            // Joystick gauche : Déplacement
+            if (leftJoystick.active && navetteManager && navetteManager.navette) {
+                const navette = navetteManager.navette;
+                const moveSpeed = 0.5;
+                
+                // Normaliser les valeurs du joystick (-1 à 1)
+                const joyX = leftJoystick.x / 50;
+                const joyY = leftJoystick.y / 50;
+                
+                // Déplacement relatif à l'orientation de la caméra
+                const forward = new THREE.Vector3(0, 0, -1);
+                const right = new THREE.Vector3(1, 0, 0);
+                
+                forward.applyQuaternion(camera.quaternion);
+                right.applyQuaternion(camera.quaternion);
+                
+                // Projeter sur le plan horizontal
+                forward.y = 0;
+                right.y = 0;
+                forward.normalize();
+                right.normalize();
+                
+                // Appliquer le déplacement
+                navette.position.add(forward.multiplyScalar(-joyY * moveSpeed));
+                navette.position.add(right.multiplyScalar(joyX * moveSpeed));
+                
+                // Synchroniser la caméra avec la navette
+                camera.position.copy(navette.position);
+            }
+            
+            // Joystick droit : Rotation caméra
+            if (rightJoystick.active && fpsController) {
+                const rotateSpeed = 0.03;
+                
+                // Normaliser les valeurs du joystick
+                const joyX = rightJoystick.x / 50;
+                const joyY = rightJoystick.y / 50;
+                
+                // Appliquer la rotation
+                fpsController.cameraAngleY -= joyX * rotateSpeed;
+                fpsController.cameraAngleX -= joyY * rotateSpeed;
+                fpsController.cameraAngleX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, fpsController.cameraAngleX));
+            }
+        }
+        
+        // Mettre à jour le contrôleur FPS
+        if (fpsController) fpsController.update();
+        
+        // Mettre à jour le contrôleur manette
+        if (window.gamepadController) {
+            window.gamepadController.update();
+        }
+        
+        if (socialNetworksManager) {
+            socialNetworksManager.animate();
+            socialNetworksManager.handleCardInteractions(fpsController);
+        }
+        
+        if (navetteManager) navetteManager.animate();
+        
+        if (shootingSystem) shootingSystem.update(0.016);
+        
+        // Mettre à jour les armes énergétiques
+        if (energyWeapon && navetteManager && navetteManager.navette) {
+            const velocity = new THREE.Vector3();
+            energyWeapon.update(0.016, null, shootingSystem.projectiles, navetteManager.navette, velocity);
+        }
+        
+        // Mettre à jour les Boules de cristal (animations de dispersion)
+        if (dragonBallSystem) dragonBallSystem.update(0.016);
+        
+        // Mettre à jour les Infinity Stones (animations)
+        if (infinityStonesSystem) infinityStonesSystem.update(0.016);
+        
+        // Vérifier si l'animation Boule de cristal est terminée
+        if (currentAnimation === 'dragonball' && window.dragonBallSystem.isAnimationComplete()) {
+            console.log('✅ Boule de cristal terminé, démarrage Infinity Stones');
+            window.infinityStonesSystem.startAnimation();
+            currentAnimation = 'infinitystones';
+        }
+        
+        // Vérifier si l'animation Infinity Stones est terminée
+        if (currentAnimation === 'infinitystones' && window.infinityStonesSystem.isAnimationComplete()) {
+            console.log('✅ Séquence complète terminée');
+            currentAnimation = null; // Réinitialiser pour pouvoir recommencer
+            
+            // Nettoyer les artefacts qui ne sont pas assignés à index
+            cleanupNonAssignedArtefacts();
+        }
+        
+        if (collectionSystem) collectionSystem.update();
+
+        if (stargateSystem) stargateSystem.update(0.016);
+
+        // Mettre à jour les panneaux publicitaires (DÉSACTIVÉ - fichiers manquants)
+        // if (window.publicityPanels) window.publicityPanels.update();
+
+        // Mettre à jour le panneau holographique (DÉSACTIVÉ - fichiers manquants)
+        // if (window.panneauHolographique) window.panneauHolographique.update();
+
+        // Mettre à jour le plateau volant (vérifier collision joueur) (DÉSACTIVÉ - fichiers manquants)
+        // if (window.plateauVolant) window.plateauVolant.checkPlayerCollision();
+
+        // Mettre à jour la Porte Dorée
+        if (goldenDoor) goldenDoor.update(0.016);
+
+        // Mettre à jour l'aura de vitesse
+        if (speedAura) speedAura.update(0.016);
+        
+        // Animer le panneau holographique de l'arcade
+        if (window.arcadeSign) {
+            window.arcadeSign.rotation.y += 0.005; // Rotation plus lente pour le grand panneau
+            window.arcadeSign.position.y = 50 + Math.sin(timeInSeconds) * 2; // Amplitude plus grande
+
+            // Animation individuelle des lettres
+            if (window.arcadeSign.children) {
+                window.arcadeSign.children.forEach((child, index) => {
+                    if (child.geometry && child.geometry.type === 'BoxGeometry' && index > 2) {
+                        // Animation de flottement pour les lettres
+                        child.position.y = Math.sin(timeInSeconds * 2 + index * 0.5) * 1.5;
+                        child.rotation.y = Math.sin(timeInSeconds + index * 0.3) * 0.1;
+                    }
+                });
+            }
+        }
+
+        // Animer le panneau holographique au-dessus du beacon
+        if (window.arcadeTopSign) {
+            // Rotation sur l'axe Z car le panneau est vertical
+            window.arcadeTopSign.rotation.z += 0.01;
+            // Flottement lent en hauteur
+            window.arcadeTopSign.position.y = 3150 + Math.sin(timeInSeconds * 0.8) * 25;
+        }
+
+        // Animer le panneau holographique de l'immobilier (optimisé avec cache)
+        if (window.immobilierBuilding) {
+            // Mettre en cache les références toutes les 5 secondes
+            if (!cachedImmobilierSign || currentTime - lastCacheUpdate > 5000) {
+                cachedImmobilierSign = window.immobilierBuilding.children.find(child =>
+                    child.children && child.children.some(grandChild =>
+                        grandChild.geometry && grandChild.geometry.type === 'CircleGeometry'
+                    )
+                );
+                if (cachedImmobilierSign) {
+                    cachedImmobilierPanel = cachedImmobilierSign.children.find(child =>
+                        child.geometry && child.geometry.type === 'CircleGeometry'
+                    );
+                }
+                lastCacheUpdate = currentTime;
+            }
+
+            if (cachedImmobilierSign) {
+                cachedImmobilierSign.rotation.y += 0.008;
+                cachedImmobilierSign.position.y = 15 + Math.sin(timeInSeconds * 1.5) * 1.5;
+
+                if (cachedImmobilierPanel) {
+                    cachedImmobilierPanel.material.emissiveIntensity = 1.2 + Math.sin(timeInSeconds * 3) * 0.3;
+                }
+            }
+        }
+
+        // Animer l'eau de la scène immobilier
+        if (window.immobilierWater) {
+            window.immobilierWater.material.emissiveIntensity = 0.3 + Math.sin(timeInSeconds * 2) * 0.1;
+        }
+
+        // Animer les lumières de la scène immobilier
+        if (window.immobilierFrontLight1) {
+            window.immobilierFrontLight1.intensity = 5 + Math.sin(timeInSeconds * 1.5) * 0.5;
+        }
+        if (window.immobilierFrontLight2) {
+            window.immobilierFrontLight2.intensity = 3 + Math.cos(timeInSeconds * 1.2) * 0.3;
+        }
+
+        // Animation des particules flottantes (optimisé - cache de 5 secondes)
+        if (scene) {
+            // Mettre en cache les particules toutes les 5 secondes au lieu de traverse à chaque frame
+            if (cachedFloatingParticles.length === 0 || currentTime - lastCacheUpdate > 5000) {
+                cachedFloatingParticles = [];
+                scene.traverse((child) => {
+                    if (child.userData.isFloatingParticles) {
+                        cachedFloatingParticles.push(child);
+                    }
+                });
+            }
+
+            // Animer les particules en cache
+            cachedFloatingParticles.forEach(child => {
+                if (child && child.visible) {
+                    child.rotation.y += 0.0005;
+                    const positions = child.geometry.attributes.position.array;
+                    for (let i = 1; i < positions.length; i += 3) {
+                        positions[i] += Math.sin(timeInSeconds + i) * 0.01;
+                    }
+                    child.geometry.attributes.position.needsUpdate = true;
+                }
+            });
+        }
+        
+        // Vérifier la proximité de l'entrée de l'arcade
+        if (window.arcadeEntrance && camera) {
+            const distanceToEntrance = camera.position.distanceTo(window.arcadeEntrance);
+            
+            // Afficher un message quand on s'approche
+            if (distanceToEntrance < 15 && distanceToEntrance >= 5) {
+                if (!window.arcadeProximityMessage) {
+                    window.arcadeProximityMessage = document.createElement('div');
+                    window.arcadeProximityMessage.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: linear-gradient(135deg, rgba(0, 255, 255, 0.95), rgba(255, 0, 255, 0.95));
+                        color: #fff;
+                        padding: 25px 50px;
+                        border-radius: 20px;
+                        font-family: 'Courier New', monospace;
+                        font-size: 28px;
+                        font-weight: bold;
+                        text-align: center;
+                        z-index: 9999;
+                        border: 4px solid #fff;
+                        box-shadow: 0 0 40px rgba(0, 255, 255, 1), inset 0 0 20px rgba(255, 255, 255, 0.5);
+                        animation: pulse 1s infinite;
+                    `;
+                    window.arcadeProximityMessage.textContent = '🎮 ARCADE - Approchez-vous pour entrer';
+                    document.body.appendChild(window.arcadeProximityMessage);
+                }
+            } else if (window.arcadeProximityMessage && distanceToEntrance >= 15) {
+                document.body.removeChild(window.arcadeProximityMessage);
+                window.arcadeProximityMessage = null;
+            }
+            
+            // Redirection quand on est très proche
+            if (distanceToEntrance < 5) {
+                console.log('🎮 Entrée dans la salle d\'arcade !');
+                if (window.arcadeProximityMessage) {
+                    document.body.removeChild(window.arcadeProximityMessage);
+                    window.arcadeProximityMessage = null;
+                }
+                window.location.href = 'game/jeu-cube.html';
+            }
+        }
+        
+        // === VÉRIFICATION DE LA TÉLÉPORTATION IMMOBILIER ===
+        if (window.immobilierBuilding && camera) {
+            // Vérifier si le joueur est dans la zone de téléportation
+            const immobilierPosition = window.immobilierBuilding.position.clone();
+            immobilierPosition.y = camera.position.y; // Utiliser la même hauteur que la caméra
+            
+            const distanceToImmobilier = camera.position.distanceTo(immobilierPosition);
+            
+            // Zone de téléportation avec le système modulaire
+            if (window.hotelVaporwaveSystem) {
+                window.hotelVaporwaveSystem.checkTeleportation(camera);
+            }
+            
+            // Vérifier la téléportation vers le palace (version simplifiée)
+            if (window.palaceBuilding) {
+                const palacePos = window.palaceBuilding.position.clone();
+                palacePos.y = camera.position.y;
+                const distanceToPalace = camera.position.distanceTo(palacePos);
+                if (distanceToPalace < 15) {
+                    console.log('🏰 Téléportation vers le palace ! Distance:', distanceToPalace);
+                    // window.open('https://example.com/palace', '_blank');
+                }
+            }
+            
+            // Vérifier la téléportation vers Stark Tower (version simplifiée)
+            if (window.starkTower) {
+                const towerPos = window.starkTower.position.clone();
+                towerPos.y = camera.position.y;
+                const distanceToTower = camera.position.distanceTo(towerPos);
+                if (distanceToTower < 12) {
+                    console.log('🏢 Téléportation vers Stark Tower ! Distance:', distanceToTower);
+                    // window.open('https://example.com/stark-tower', '_blank');
+                }
+            }
+        }
+        
+        // Mettre à jour le système hôtel modulaire
+        if (window.hotelVaporwaveSystem) {
+            window.hotelVaporwaveSystem.update();
+        }
+        
+        // Les versions simplifiées n'ont pas d'animations complexes pour l'instant
+        
+        // Mettre à jour le radar en continu
+        if (window.radarSystem) {
+            window.radarSystem.updateRadar();
+        }
+        
+        // Mettre à jour le HUD manager (pour le HUD holographique)
+        if (hudManager) hudManager.update();
+        
+        renderer.render(scene, camera);
+    }
+    
+    // === TERMINAL RÉTRO - VARIABLES GLOBALES ===
+    let isModalOpen = false;
+    let typingActive = false;
+    let typingIntervals = [];
+    
+    // === AUDIO CONTEXT POUR LES SONS ===
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    function playBeep(frequency, duration, type = 'sine') {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+    }
+
+    function playOpenSound() {
+        playBeep(800, 0.1);
+        setTimeout(() => playBeep(1200, 0.15), 100);
+        setTimeout(() => playBeep(1600, 0.2), 200);
+    }
+
+    function playCloseSound() {
+        playBeep(1600, 0.1);
+        setTimeout(() => playBeep(1200, 0.15), 100);
+        setTimeout(() => playBeep(600, 0.3), 200);
+    }
+
+    function playTypingSound() {
+        // Son de clavier inspiré du film Alien - plus mécanique et profond
+        const frequency = 150 + Math.random() * 100;
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        const filter = audioContext.createBiquadFilter();
+        
+        oscillator.connect(filter);
+        filter.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = 'square';
+        
+        filter.type = 'lowpass';
+        filter.frequency.value = 400;
+        
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.05);
+        
+        // Ajouter un petit clic mécanique
+        const clickOsc = audioContext.createOscillator();
+        const clickGain = audioContext.createGain();
+        
+        clickOsc.connect(clickGain);
+        clickGain.connect(audioContext.destination);
+        
+        clickOsc.frequency.value = 80;
+        clickOsc.type = 'square';
+        
+        clickGain.gain.setValueAtTime(0.15, audioContext.currentTime);
+        clickGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.01);
+        
+        clickOsc.start(audioContext.currentTime);
+        clickOsc.stop(audioContext.currentTime + 0.01);
+    }
+
+    function typeText(element, text, speed = 50) {
+        let index = 0;
+        element.textContent = '';
+        
+        const interval = setInterval(() => {
+            if (!typingActive) {
+                clearInterval(interval);
+                return;
+            }
+            
+            if (index < text.length) {
+                element.textContent += text[index];
+                playTypingSound();
+                index++;
+            } else {
+                clearInterval(interval);
+            }
+        }, speed);
+        
+        typingIntervals.push(interval);
+    }
+
+    function startTypingLoop() {
+        typingActive = true;
+        const allTextElements = document.querySelectorAll('[data-text]');
+        
+        function typeAll() {
+            if (!typingActive) return;
+            
+            let delay = 0;
+            allTextElements.forEach((element, index) => {
+                setTimeout(() => {
+                    if (!typingActive) return;
+                    const text = element.getAttribute('data-text');
+                    typeText(element, text, 30);
+                }, delay);
+                delay += element.getAttribute('data-text').length * 30 + 100;
+            });
+            
+            setTimeout(() => {
+                if (typingActive) {
+                    allTextElements.forEach(el => el.textContent = '');
+                    setTimeout(typeAll, 1000);
+                }
+            }, delay + 3000);
+        }
+        
+        typeAll();
+    }
+    
+    function stopTyping() {
+        typingActive = false;
+        typingIntervals.forEach(interval => clearInterval(interval));
+        typingIntervals = [];
+        document.querySelectorAll('[data-text]').forEach(el => el.textContent = '');
+    }
+
+    // === FONCTION POUR LA MODALE DES CONTRÔLES ===
+    function toggleControlsModal() {
+        console.log('🎮 toggleControlsModal appelée');
+        const modalOverlay = document.getElementById('controls-modal');
+        const modal = document.querySelector('#controls-modal .modal');
+        const button = document.getElementById('controls-button');
+        
+        if (!isModalOpen) {
+            // Ouvrir la modale
+            isModalOpen = true;
+            modalOverlay.classList.add('show');
+            modal.classList.remove('hidden');
+            modal.classList.add('visible');
+            button.textContent = '✕ FERMER';
+            button.style.background = 'rgba(255, 102, 0, 0.9)';
+            playOpenSound();
+            
+            setTimeout(() => {
+                startTypingLoop();
+            }, 800);
+        } else {
+            // Fermer la modale
+            isModalOpen = false;
+            stopTyping();
+            modal.classList.remove('visible');
+            modal.classList.add('hidden');
+            button.textContent = '🎮 AIDE';
+            button.style.background = 'rgba(0, 255, 0, 0.9)';
+            playCloseSound();
+            
+            setTimeout(() => {
+                modalOverlay.classList.remove('show');
+                modal.classList.remove('hidden');
+            }, 600);
+        }
+    }
+</script>
 </body>
 </html>
